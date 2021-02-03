@@ -61,7 +61,8 @@ export const mutations = {
       sessionId: payload.sessionId,
       startDate: payload.startDate,
       endDate: payload.endDate,
-      personStatus: payload.personStatus
+      personStatus: payload.personStatus,
+      eventId: payload.eventId
     }
     s.pagination = {
       itemsPerPage: payload.itemsPerPage - 0,
@@ -172,7 +173,8 @@ export const actions = {
         sessionId,
         startDate,
         endDate,
-        personStatus
+        personStatus,
+        eventId
       } = filter
       const query = mapKeys(
         {
@@ -186,7 +188,8 @@ export const actions = {
           sessionId,
           registrationDateStart: startDate,
           registrationDateEnd: endDate,
-          personStatus
+          personStatus,
+          eventId
         },
         (value, key) => snakeCase(key)
       )

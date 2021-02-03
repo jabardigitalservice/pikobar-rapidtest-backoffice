@@ -294,6 +294,10 @@ export default {
     listType: {
       type: String,
       default: 'participant'
+    },
+    eventId: {
+      type: Number,
+      default: null
     }
   },
 
@@ -335,6 +339,7 @@ export default {
     },
     options: {
       set(value) {
+        value.eventId = this.eventId
         this.$store.commit('applicants/SET_TABLE_OPTIONS', value)
       },
       get() {

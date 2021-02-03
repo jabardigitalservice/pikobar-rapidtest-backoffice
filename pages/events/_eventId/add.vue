@@ -80,6 +80,7 @@
     <applicants-datatable
       v-model="applicants"
       title="Daftar Calon Peserta RDT"
+      :event-id="getCurrent.id"
       class="mt-4"
       no-actions
       show-select
@@ -286,6 +287,7 @@ export default {
       query.startDate = value.startDate
       query.endDate = value.endDate
       query.personStatus = value.personStatus
+      query.eventId = value.eventId
       query = pickBy(query, identity)
       this.$router
         .replace({
