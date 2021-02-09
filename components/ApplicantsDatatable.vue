@@ -142,9 +142,9 @@
           {{ item.age }}
         </v-layout>
       </template>
-      <template v-slot:[`item.created_at`]="{ item }">
+      <template v-slot:[`item.updated_at`]="{ item }">
         <v-layout justify-start>
-          {{ $dateFns.format(new Date(item.created_at), 'dd MMMM yyyy HH:mm') }}
+          {{ $dateFns.format(new Date(item.updated_at), 'dd MMMM yyyy HH:mm') }}
         </v-layout>
       </template>
       <template v-slot:[`item.person_status`]="{ item }">
@@ -249,7 +249,7 @@ const headers = [
     width: 150,
     align: 'center'
   },
-  { text: 'Tanggal Terdaftar', value: 'created_at', width: 200 },
+  { text: 'Tanggal Terdaftar', value: 'updated_at', width: 200 },
   { text: 'Actions', value: 'actions', sortable: false, width: 150 }
 ]
 
