@@ -340,6 +340,7 @@ export default {
     options: {
       set(value) {
         value.eventId = this.eventId
+        value.sortBy = ['updated_at']
         this.$store.commit('applicants/SET_TABLE_OPTIONS', value)
       },
       get() {
