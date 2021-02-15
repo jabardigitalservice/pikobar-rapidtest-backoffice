@@ -32,7 +32,7 @@ export const INTEGRATE_FAILED = 'Data gagal dikirim ke Aplikasi Labkes'
 export const DEFAULT_FILTER = {
   groupBy: [],
   groupDesc: [],
-  sortBy: ['created_at'],
+  sortBy: [],
   sortDesc: [true],
   sortOrder: 'desc',
   status: 'published',

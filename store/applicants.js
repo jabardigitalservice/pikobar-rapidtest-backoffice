@@ -5,6 +5,7 @@ import { DEFAULT_FILTER, DEFAULT_PAGINATION } from '@/utilities/constant'
 
 const defaultFilter = { ...DEFAULT_FILTER }
 delete defaultFilter.status
+defaultFilter.sortBy = ['updated_at']
 
 export const state = () => {
   return {
