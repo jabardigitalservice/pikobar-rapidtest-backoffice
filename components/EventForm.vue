@@ -233,6 +233,7 @@ export default {
   },
   methods: {
     async getFasyankes() {
+      this.host_name = null
       await this.$store.dispatch('events/getFasyankes', this.host_type)
     },
     addKloter() {
