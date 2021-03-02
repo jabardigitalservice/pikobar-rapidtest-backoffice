@@ -1,69 +1,58 @@
 <template>
   <v-dialog v-model="open" hide-overlay persistent max-width="750">
     <v-card>
-      <v-card-title class="text-center">
-        <span class="col pl-10">Peringatan!</span>
-        <v-btn icon @click="close">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
+      <v-card-title></v-card-title>
       <v-card-text v-if="items.length > 0">
-        <div class="text-center">
+        <v-alert prominent text outlined color="blue" type="info">
           <p>
             Berikut ini adalah data peserta yang akan diintegrasikan ke Aplikasi
-            Manlab.
+            Simlab.
           </p>
           <p>
             Data yang diintegrasikan adalah data peserta yang telah melakukan
             checkin.
           </p>
-        </div>
+        </v-alert>
         <div>
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">
-                    Nomor Pendaftaran
-                  </th>
-                  <th class="text-left">
-                    Nama
-                  </th>
-                  <th class="text-left">
-                    Kode Sampel
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="data in items" :key="data.id">
-                  <td>{{ data.applicant.registration_code }}</td>
-                  <td>{{ data.applicant.name }}</td>
-                  <td>{{ data.lab_code_sample }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
+          <template>
+            <v-data-table
+              :headers="headers"
+              :items="items"
+              hide-default-footer
+              style="border: 1px solid #cacaca;"
+            >
+              <template v-slot:[`item.status_on_simlab`]="{ item }">
+                <v-layout justify-start>
+                  <v-chip class="ma-2" :color="color" label>
+                    {{ getStatusIntegration(item.status_on_simlab) }}
+                  </v-chip>
+                </v-layout>
+              </template>
+            </v-data-table>
+          </template>
         </div>
       </v-card-text>
       <v-card-text v-else>
-        <div class="text-center">
-          <p class="body-1">
-            Mohon maaf data peserta pada kegiatan ini belum memiliki kode sampel
-            sehingga belum bisa dikirim ke aplikasi Labkes.
-          </p>
+        <div>
+          <v-alert text outlined color="deep-orange">
+            <p>
+              Mohon maaf data peserta pada kegiatan ini belum memiliki kode
+              sampel sehingga belum bisa dikirim ke aplikasi Labkes.
+            </p>
+          </v-alert>
         </div>
       </v-card-text>
-      <v-card-actions class="pb-6 justify-center">
+      <v-card-actions class="pb-6 mr-4 justify-end">
         <v-btn color="grey darken-1" outlined class="mr-2 px-2" @click="close">
           Batal
         </v-btn>
         <v-btn
           v-if="items.length > 0"
-          color="primary"
+          color="success"
           class="ml-2 px-2"
           @click="send"
         >
-          Kirim
+          Kirim Data
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -82,7 +71,38 @@ export default {
       default: null
     }
   },
+  data() {
+    return {
+      status: null,
+      color: null,
+      headers: [
+        {
+          text: 'Nomor Pendaftaran',
+          align: 'start',
+          value: 'applicant.registration_code'
+        },
+        { text: 'Nama', value: 'applicant.name' },
+        { text: 'Kode Sample', value: 'lab_code_sample' },
+        { text: 'Status', value: 'status_on_simlab' }
+      ]
+    }
+  },
   methods: {
+    getStatusIntegration(data) {
+      if (data === 'FAILED') {
+        this.status = 'Gagal Terkirim'
+        this.color = 'deep-orange lighten-4'
+        return this.status
+      } else if (data === 'SENT') {
+        this.status = 'Sukses Terkirim'
+        this.color = 'green accent-1'
+        return this.status
+      } else {
+        this.status = 'Belum Terkirim'
+        this.color = 'default'
+        return this.status
+      }
+    },
     close() {
       this.$emit('close')
     },

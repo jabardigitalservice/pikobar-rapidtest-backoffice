@@ -186,6 +186,21 @@
           {{ value }}
         </v-chip>
       </template>
+      <template v-slot:[`item.applicant.name`]="{ item }" class="flex wrap">
+        <div v-if="item.status_on_simlab === 'FAILED'" class="ml-n2">
+          <v-chip
+            class="ma-2"
+            color="deep-orange lighten-4"
+            label
+            style="width: 200px;"
+          >
+            {{ item.applicant.name }}
+          </v-chip>
+        </div>
+        <div v-else>
+          {{ item.applicant.name }}
+        </div>
+      </template>
       <template v-slot:[`item.applicant.birth_date`]="{ item }">
         <v-layout justify-start>
           {{ item.applicant.age }}
@@ -202,6 +217,17 @@
           <template v-if="item.applicant.gender === 'F'">
             Perempuan
           </template>
+        </v-layout>
+      </template>
+      <template v-slot:[`item.status_on_simlab`]="{ item }">
+        <v-layout v-if="item.status_on_simlab === null" justify-start>
+          Belum Dikirim
+        </v-layout>
+        <v-layout v-else-if="item.status_on_simlab === 'SENT'" justify-start>
+          Sudah Dikirim
+        </v-layout>
+        <v-layout v-else-if="item.status_on_simlab === 'FAILED'" justify-start>
+          Gagal Dikirim
         </v-layout>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
@@ -269,7 +295,7 @@
         </v-tooltip>
       </template>
     </v-data-table>
-    <dialog-export-loader :open="modalExportLoader" />
+    <dialog-export-loader :open="modalLoader" />
     <event-applicant-edit-lab-code-dialog
       :open="modalEditLabCode"
       :record-id="modalEditLabCodeId"
@@ -376,7 +402,7 @@ const headers = [
     sortable: false,
     width: 150
   },
-  { text: 'Nama Lengkap', value: 'applicant.name', width: 250 },
+  { text: 'Nama Lengkap', value: 'applicant.name', width: 200 },
   {
     text: 'Instansi Tempat Kerja',
     value: 'applicant.workplace_name',
@@ -385,7 +411,7 @@ const headers = [
   { text: 'Kloter', value: 'rdt_event_schedule_id', width: 85 },
   { text: 'Jenis Kelamin', value: 'applicant.gender', width: 140 },
   { text: 'Usia', value: 'applicant.birth_date', width: 85 },
-  { text: 'Lokasi Checkin', value: 'attend_location', width: 250 },
+  { text: 'Lokasi Checkin', value: 'attend_location', width: 200 },
   { text: 'Terdaftar', value: 'created_at', width: 200 },
   { text: 'Checkin', value: 'attended_at', width: 200 },
   { text: 'Kode Sampel', value: 'lab_code_sample', width: 150 },
@@ -395,6 +421,11 @@ const headers = [
   {
     text: 'Kirim Hasil',
     value: 'notified_result_at',
+    width: 200
+  },
+  {
+    text: 'Status Integrasi',
+    value: 'status_on_simlab',
     width: 200
   },
   {
@@ -448,7 +479,7 @@ export default {
       blastNotifModal: false,
       ImportModalTest: false,
       modalType: 'Undangan',
-      modalExportLoader: false,
+      modalLoader: false,
       modalEditLabCode: false,
       modalEditLabCodeId: null,
       deleteDialog: false,
@@ -462,6 +493,7 @@ export default {
       uncheckDialog: false,
       uncheckWarningDialog: false,
       integratingModal: false,
+      integratingLoading: false,
       incompleteResultTest: []
     }
   },
@@ -660,14 +692,12 @@ export default {
     },
     async integrateData() {
       try {
+        this.modalLoader = true
         const response = await this.$store.dispatch(
           'eventParticipants/integrateDataToLabkes',
           this.idEvent
         )
-        const { succes, failed } = response.result
-        const successCount = Array.isArray(succes) ? succes.length : 0
-        const failedCount = Array.isArray(failed) ? failed.length : 0
-        const message = `Data berhasil dikirim ${successCount}. Data Gagal dikirim ${failedCount}.`
+        const message = response.message
         this.$toast.show({
           message,
           type: 'success'
@@ -682,18 +712,24 @@ export default {
           type: 'error'
         })
       } finally {
-        this.integratingModal = false
+        this.modalLoader = false
       }
     },
     closeDialogIntegratingData() {
       this.integratingModal = false
     },
-    openModalIntegratingData() {
+    openModalIntegratingData(automationCall) {
       this.integratingModal = true
-      const data = this.records.filter(
-        (item) => item.attended_at !== null && item.synchronization_at === null
-      )
-      this.incompleteResultTest = data
+      if (automationCall === true) {
+        const data = this.records.filter((item) => item.attended_at !== null)
+        this.incompleteResultTest = data
+      } else {
+        const data = this.records.filter(
+          (item) =>
+            item.attended_at !== null && item.synchronization_at === null
+        )
+        this.incompleteResultTest = data
+      }
     },
     closeDialogWarning() {
       this.blastNotifModalWarning = false
@@ -838,7 +874,7 @@ export default {
       this.labCodeSample = sample.data.lab_code_sample
     },
     downloadExport(param) {
-      this.modalExportLoader = true
+      this.modalLoader = true
       const exportFormatF1 = `/rdt/events/${this.idEvent}/participants-export-f1?format=${param.format}`
       const exportFormatRaw = `/rdt/events/${this.idEvent}/participants-export?format=${param.format}`
       const exportType =
@@ -874,11 +910,11 @@ export default {
           link.remove()
           window.URL.revokeObjectURL(url)
 
-          this.modalExportLoader = false
+          this.modalLoader = false
         })
         .catch(() => {
           alert('Telah terjadi sebuah kesalahan. Silahkan coba ulangi kembali.')
-          this.modalExportLoader = false
+          this.modalLoader = false
         })
     }
   }
