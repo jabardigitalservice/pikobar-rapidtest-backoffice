@@ -718,18 +718,12 @@ export default {
     closeDialogIntegratingData() {
       this.integratingModal = false
     },
-    openModalIntegratingData(automationCall) {
+    openModalIntegratingData() {
       this.integratingModal = true
-      if (automationCall === true) {
-        const data = this.records.filter((item) => item.attended_at !== null)
-        this.incompleteResultTest = data
-      } else {
-        const data = this.records.filter(
-          (item) =>
-            item.attended_at !== null && item.synchronization_at === null
-        )
-        this.incompleteResultTest = data
-      }
+      const data = this.records.filter(
+        (item) => item.attended_at !== null && item.synchronization_at === null
+      )
+      this.incompleteResultTest = data
     },
     closeDialogWarning() {
       this.blastNotifModalWarning = false
