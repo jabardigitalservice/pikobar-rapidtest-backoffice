@@ -224,12 +224,12 @@
                   <template v-slot:default>
                     <thead>
                       <tr>
-                        <th class="text-left">Nama Kegiatan</th>
-                        <th class="text-left">Tanggal Kegiatan</th>
-                        <th class="text-left">Checkin</th>
-                        <th class="text-left">Jenis Tes</th>
-                        <th class="text-left">Tanggal Hasil Tes</th>
-                        <th class="text-left">Hasil Tes</th>
+                        <th scope="col" class="text-left">Nama Kegiatan</th>
+                        <th scope="col" class="text-left">Tanggal Kegiatan</th>
+                        <th scope="col" class="text-left">Checkin</th>
+                        <th scope="col" class="text-left">Jenis Tes</th>
+                        <th scope="col" class="text-left">Tanggal Hasil Tes</th>
+                        <th scope="col" class="text-left">Hasil Tes</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -237,12 +237,12 @@
                         v-for="invitation in invitations"
                         :key="invitation.id"
                       >
-                        <td>
+                        <td scope="row">
                           {{
                             invitation.event ? invitation.event.event_name : '-'
                           }}
                         </td>
-                        <td>
+                        <td scope="row">
                           {{
                             invitation.event
                               ? $dateFns.format(
@@ -252,7 +252,7 @@
                               : '-'
                           }}
                         </td>
-                        <td>
+                        <td scope="row">
                           {{
                             invitation.attended_at
                               ? $dateFns.format(
@@ -262,12 +262,12 @@
                               : '-'
                           }}
                         </td>
-                        <td>
+                        <td scope="row">
                           {{
                             invitation.test_type ? invitation.test_type : '-'
                           }}
                         </td>
-                        <td>
+                        <td scope="row">
                           {{
                             invitation.result_at
                               ? $dateFns.format(
@@ -277,7 +277,7 @@
                               : '-'
                           }}
                         </td>
-                        <td>
+                        <td scope="row">
                           {{
                             invitation.lab_result_type
                               ? invitation.lab_result_type

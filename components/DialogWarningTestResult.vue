@@ -17,18 +17,20 @@
             <template v-slot:default>
               <thead>
                 <tr>
-                  <th class="text-left">
+                  <th scope="col" class="text-left">
                     Nomor Pendaftaran
                   </th>
-                  <th class="text-left">
+                  <th scope="col" class="text-left">
                     Nama
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="data in items" :key="data.id">
-                  <td>{{ data.applicant.registration_code }}</td>
-                  <td>{{ data.applicant.name }}</td>
+                  <td scope="row">
+                    {{ data.applicant.registration_code }}
+                  </td>
+                  <td scope="row">{{ data.applicant.name }}</td>
                 </tr>
               </tbody>
             </template>
