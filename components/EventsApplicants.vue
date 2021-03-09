@@ -713,7 +713,7 @@ export default {
           'Silahkan cek kembali format kode sample dan duplikasi kode sample'
         this.$toast.show({
           message:
-            error.data.status === 422
+            error.status === 422
               ? error.data.message + '. ' + messageCustom
               : error.data.message,
           type: 'error'
