@@ -22,9 +22,25 @@
               style="border: 1px solid #cacaca;"
             >
               <template v-slot:[`item.status_on_simlab`]="{ item }">
-                <v-layout justify-start>
-                  <v-chip class="ma-2" :color="color" label>
-                    {{ getStatusIntegration(item.status_on_simlab) }}
+                <v-layout v-if="item.status_on_simlab === null" justify-start>
+                  <v-chip class="ma-2" color="default" label>
+                    Belum Dikirim
+                  </v-chip>
+                </v-layout>
+                <v-layout
+                  v-else-if="item.status_on_simlab === 'SENT'"
+                  justify-start
+                >
+                  <v-chip class="ma-2" color="green accent-1" label>
+                    Sudah Dikirim
+                  </v-chip>
+                </v-layout>
+                <v-layout
+                  v-else-if="item.status_on_simlab === 'FAILED'"
+                  justify-start
+                >
+                  <v-chip class="ma-2" color="deep-orange lighten-4" label>
+                    Gagal Dikirim
                   </v-chip>
                 </v-layout>
               </template>
@@ -88,21 +104,6 @@ export default {
     }
   },
   methods: {
-    getStatusIntegration(data) {
-      if (data === 'FAILED') {
-        this.status = 'Gagal Terkirim'
-        this.color = 'deep-orange lighten-4'
-        return this.status
-      } else if (data === 'SENT') {
-        this.status = 'Sukses Terkirim'
-        this.color = 'green accent-1'
-        return this.status
-      } else {
-        this.status = 'Belum Terkirim'
-        this.color = 'default'
-        return this.status
-      }
-    },
     close() {
       this.$emit('close')
     },
