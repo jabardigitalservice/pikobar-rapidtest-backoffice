@@ -265,7 +265,7 @@ export const actions = {
       const response = await this.$axios.$post(`/synctolabkes/${idEvent}`)
       return response
     } catch (e) {
-      throw new Error(e.response.data.message)
+      throw e.response
     } finally {
       commit('SET_LOADING', false)
     }

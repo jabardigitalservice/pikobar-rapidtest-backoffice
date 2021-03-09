@@ -14,7 +14,7 @@
           Tambah Peserta
         </v-btn>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="7">
         <v-btn
           v-if="allow.includes('notify-participants')"
           color="primary"
@@ -188,14 +188,21 @@
       </template>
       <template v-slot:[`item.applicant.name`]="{ item }" class="flex wrap">
         <div v-if="item.status_on_simlab === 'FAILED'" class="ml-n2">
-          <v-chip
-            class="ma-2"
-            color="deep-orange lighten-4"
-            label
-            style="width: 200px;"
-          >
-            {{ item.applicant.name }}
-          </v-chip>
+          <v-tooltip bottom color="error">
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip
+                class="ma-2"
+                color="deep-orange lighten-4"
+                label
+                v-bind="attrs"
+                style="width: 200px;"
+                v-on="on"
+              >
+                {{ item.applicant.name }}
+              </v-chip>
+            </template>
+            Data Gagal dikirim ke Aplikasi SIM Lab
+          </v-tooltip>
         </div>
         <div v-else>
           {{ item.applicant.name }}
@@ -380,8 +387,7 @@ import {
   SUCCESS_UPDATE_TEST_RESULT,
   FAILED_UPDATE_TEST_RESULT,
   UNCHECK_SUCCESS,
-  UNCHECK_FAILED,
-  INTEGRATE_FAILED
+  UNCHECK_FAILED
 } from '@/utilities/constant'
 import EventApplicantEditLabCodeDialog from '@/components/EventApplicantEditLabCodeDialog'
 import DialogExportLoader from '@/components/DialogLoader'
@@ -424,7 +430,7 @@ const headers = [
     width: 200
   },
   {
-    text: 'Status Integrasi',
+    text: 'Status Terkirim',
     value: 'status_on_simlab',
     width: 200
   },
@@ -593,7 +599,7 @@ export default {
         this.uncheckDialog = false
       }
     },
-    uncheckWarning(payload) {
+    uncheckWarning() {
       this.uncheckWarningDialog = true
     },
     closeDialogUncheckWarning() {
@@ -660,7 +666,7 @@ export default {
       this.selectedData = payload
       this.deleteDialog = true
     },
-    deleteClose(payload) {
+    deleteClose() {
       this.deleteDialog = false
     },
     async remove(payload) {
@@ -702,17 +708,23 @@ export default {
           message,
           type: 'success'
         })
-        await this.$store.dispatch(
-          'eventParticipants/getList',
-          this.$route.params.eventId
-        )
       } catch (error) {
+        const messageCustom =
+          'Silahkan cek kembali format kode sample dan duplikasi kode sample'
         this.$toast.show({
-          message: error.message || INTEGRATE_FAILED,
+          message:
+            error.data.status === 422
+              ? error.data.message + '. ' + messageCustom
+              : error.data.message,
           type: 'error'
         })
       } finally {
         this.modalLoader = false
+        this.integratingModal = false
+        await this.$store.dispatch(
+          'eventParticipants/getList',
+          this.$route.params.eventId
+        )
       }
     },
     closeDialogIntegratingData() {
