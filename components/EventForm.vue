@@ -192,6 +192,9 @@ export default {
   },
 
   watch: {
+    host_type(newVal, oldVal) {
+      if (oldVal !== null && newVal !== oldVal) this.host_name = null
+    },
     formData(val) {
       let kloter = [null]
       if (val) {
@@ -233,7 +236,6 @@ export default {
   },
   methods: {
     async getFasyankes() {
-      this.host_name = null
       await this.$store.dispatch('events/getFasyankes', this.host_type)
     },
     addKloter() {

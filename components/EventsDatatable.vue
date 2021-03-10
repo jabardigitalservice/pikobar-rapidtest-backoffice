@@ -111,13 +111,13 @@ import EventDeleteDialog from '@/components/EventDeleteDialog'
 
 const headers = [
   { text: 'ID', value: 'id', width: 80 },
-  { text: 'Nama Kegiatan', value: 'event_name', width: 300 },
-  { text: 'Tanggal', value: 'start_at', width: 250 },
-  { text: 'Lokasi', value: 'event_location' },
+  { text: 'Nama Kegiatan', value: 'event_name', width: 250 },
+  { text: 'Tanggal', value: 'start_at', width: 150 },
+  { text: 'Lokasi', value: 'event_location', width: 225 },
   { text: 'Kota/Kab', value: 'city.name', width: 200 },
-  { text: 'Peserta', value: 'invitations_count', width: 100 },
+  { text: 'Peserta', value: 'invitations_count', width: 100, align: 'center' },
   { text: 'Status', value: 'status' },
-  { text: 'Kloter', value: 'schedules_count', width: 100 },
+  { text: 'Kloter', value: 'schedules_count', width: 100, align: 'center' },
   { text: 'Actions', value: 'actions', sortable: false, width: 150 }
 ]
 
