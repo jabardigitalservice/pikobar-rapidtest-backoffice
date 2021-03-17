@@ -196,7 +196,6 @@ export default {
       if (oldVal !== null && newVal !== oldVal) this.hostName = null
     },
     formData(val) {
-      console.log(val)
       let kloter = [null]
       if (val) {
         kloter = val.schedules.map((sch) => {
