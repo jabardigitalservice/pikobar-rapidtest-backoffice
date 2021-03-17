@@ -28,7 +28,7 @@
         </v-col>
         <v-col cols="6">
           <pkbr-input
-            v-model="event_name"
+            v-model="eventName"
             name="Nama Kegiatan"
             label="Nama Kegiatan"
             placeholder="Masukan Nama Kegiatan"
@@ -37,7 +37,7 @@
         </v-col>
         <v-col cols="6">
           <pkbr-select
-            v-model="city_code"
+            v-model="cityCode"
             :items="getKabkot"
             label="Kab./Kota"
             name="Kab./Kota"
@@ -49,7 +49,7 @@
         </v-col>
         <v-col cols="6">
           <pkbr-select
-            v-model="host_type"
+            v-model="hostType"
             :items="typeOptions"
             label="Jenis Penyelenggara"
             name="Jenis Penyelenggara"
@@ -62,7 +62,7 @@
         </v-col>
         <v-col cols="6">
           <pkbr-input
-            v-model="event_location"
+            v-model="eventLocation"
             name="Lokasi"
             label="Lokasi"
             placeholder="Masukan Alamat Lokasi"
@@ -71,7 +71,7 @@
         </v-col>
         <v-col cols="6">
           <pkbr-combobox
-            v-model="host_name"
+            v-model="hostName"
             :items="getFasyankesListOptions"
             label="Penyelenggara"
             name="Penyelenggara"
@@ -168,11 +168,11 @@ export default {
 
   data() {
     return {
-      host_type: null,
-      event_name: null,
-      host_name: null,
-      event_location: null,
-      city_code: null,
+      hostType: null,
+      eventName: null,
+      hostName: null,
+      eventLocation: null,
+      cityCode: null,
       status: 'DRAFT',
       startDate: null,
       endDate: null,
@@ -192,10 +192,11 @@ export default {
   },
 
   watch: {
-    host_type(newVal, oldVal) {
-      if (oldVal !== null && newVal !== oldVal) this.host_name = null
+    hostType(newVal, oldVal) {
+      if (oldVal !== null && newVal !== oldVal) this.hostName = null
     },
     formData(val) {
+      console.log(val)
       let kloter = [null]
       if (val) {
         kloter = val.schedules.map((sch) => {
@@ -208,12 +209,12 @@ export default {
           return `${inputScheduleStart}-${inputScheduleEnd}`
         })
       }
-      this.host_type = val ? val.host_type : null
-      this.event_name = val ? val.event_name : null
+      this.hostType = val ? val.host_type : null
+      this.eventName = val ? val.event_name : null
       this.status = val ? val.status : null
-      this.host_name = val ? val.host_name : null
-      this.event_location = val ? val.event_location : null
-      this.city_code = val && val.city ? val.city.code : null
+      this.hostName = val ? val.host_name : null
+      this.eventLocation = val ? val.event_location : null
+      this.cityCode = val && val.city ? val.city.code : null
       this.startDate = val
         ? this.$dateFns.format(
             val.start_at.split(':')[0],
@@ -236,7 +237,7 @@ export default {
   },
   methods: {
     async getFasyankes() {
-      await this.$store.dispatch('events/getFasyankes', this.host_type)
+      await this.$store.dispatch('events/getFasyankes', this.hostType)
     },
     addKloter() {
       this.kloter.push(null)
@@ -279,12 +280,12 @@ export default {
       const start_at = schedules[0].start_at
       const end_at = schedules[schedules.length - 1].end_at
       const data = {
-        event_name: this.event_name,
-        host_name: this.host_name,
-        event_location: this.event_location,
-        city_code: this.city_code,
+        event_name: this.eventName,
+        host_name: this.hostName,
+        event_location: this.eventLocation,
+        city_code: this.cityCode,
         status: this.status,
-        host_type: this.host_type,
+        host_type: this.hostType,
         start_at,
         end_at,
         schedules
