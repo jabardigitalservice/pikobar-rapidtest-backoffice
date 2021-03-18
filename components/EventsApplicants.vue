@@ -201,7 +201,7 @@
                 {{ item.applicant.name }}
               </v-chip>
             </template>
-            Data Gagal dikirim ke Aplikasi SIM Lab
+            Data gagal dikirim ke Aplikasi SIM Lab
           </v-tooltip>
         </div>
         <div v-else>
