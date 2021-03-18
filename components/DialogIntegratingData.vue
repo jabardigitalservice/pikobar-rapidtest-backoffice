@@ -5,12 +5,11 @@
       <v-card-text v-if="items.length > 0">
         <v-alert prominent text outlined color="blue" type="info">
           <p>
-            Berikut ini adalah data peserta yang akan diintegrasikan ke Aplikasi
-            Simlab.
+            Berikut ini adalah data peserta yang akan dikirim ke Aplikasi SIM
+            Lab.
           </p>
           <p>
-            Data yang diintegrasikan adalah data peserta yang telah melakukan
-            checkin.
+            Data yang dikirim adalah data peserta yang telah dites.
           </p>
         </v-alert>
         <div>
@@ -52,8 +51,8 @@
         <div>
           <v-alert text outlined color="deep-orange">
             <p>
-              Mohon maaf data peserta pada kegiatan ini belum memiliki kode
-              sampel sehingga belum bisa dikirim ke aplikasi Labkes.
+              Mohon maaf seluruh data peserta yang sudah dites telah dikirim
+              atau tidak ada data peserta yang sudah dites.
             </p>
           </v-alert>
         </div>
