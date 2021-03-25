@@ -140,6 +140,19 @@
           </pkbr-input-time>
         </v-col>
         <v-col cols="6">
+          <pkbr-select
+            v-model="registrationType"
+            :items="registrationTypeOptions"
+            label="Jenis Pendaftaran"
+            name="Jenis Pendaftaran"
+            placeholder="Jenis Pendaftaran"
+            rules="required"
+            item-text="name"
+            item-value="value"
+            @change="getFasyankes"
+          />
+        </v-col>
+        <v-col cols="6">
           <v-btn color="success" :disabled="!valid" type="submit">
             Simpan
           </v-btn>
@@ -177,11 +190,16 @@ export default {
       startDate: null,
       endDate: null,
       isDateRange: false,
+      registrationType: null,
       kloter: [null],
       typeOptions: [
         { name: 'Rumah Sakit', value: 'rumah_sakit' },
         { name: 'Puskesmas', value: 'puskesmas' },
         { name: 'Dinkes', value: 'dinkes' }
+      ],
+      registrationTypeOptions: [
+        { name: 'Rujukan', value: 'rujukan' },
+        { name: 'Mandiri', value: 'mandiri' }
       ]
     }
   },
@@ -285,6 +303,7 @@ export default {
         city_code: this.cityCode,
         status: this.status,
         host_type: this.hostType,
+        registration_type: this.registrationType,
         start_at,
         end_at,
         schedules
