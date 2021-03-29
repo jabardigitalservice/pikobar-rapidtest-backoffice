@@ -73,8 +73,8 @@
                 <label class="text-subtitle-2 grey--text">
                   Jenis Pendaftaran
                 </label>
-                <p class="font-weight-medium mt-2 mb-0">
-                  {{ capitalizeFirstLetter(data.registration_type) }}
+                <p class="font-weight-medium mt-2 mb-0 text-capitalize">
+                  {{ data.registration_type }}
                 </p>
               </v-col>
             </v-row>
@@ -167,11 +167,6 @@ export default {
         start_at: this.$dateFns.format(new Date(sch.start_at), 'HH:mm'),
         end_at: this.$dateFns.format(new Date(sch.end_at), 'HH:mm')
       }))
-    }
-  },
-  methods: {
-    capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1)
     }
   }
 }
