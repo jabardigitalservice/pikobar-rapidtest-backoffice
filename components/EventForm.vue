@@ -230,6 +230,7 @@ export default {
       this.eventName = val ? val.event_name : null
       this.status = val ? val.status : null
       this.hostName = val ? val.host_name : null
+      this.registrationType = val ? val.registration_type : null
       this.eventLocation = val ? val.event_location : null
       this.cityCode = val && val.city ? val.city.code : null
       this.startDate = val
