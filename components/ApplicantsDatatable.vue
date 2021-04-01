@@ -249,7 +249,7 @@ const headers = [
     width: 150,
     align: 'center'
   },
-  { text: 'Tanggal Terdaftar', value: 'updated_at', width: 200 },
+  { text: 'Tanggal Terdaftar', value: 'registration_at', width: 200 },
   { text: 'Actions', value: 'actions', sortable: false, width: 150 }
 ]
 
