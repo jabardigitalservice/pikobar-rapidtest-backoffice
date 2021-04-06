@@ -142,9 +142,14 @@
           {{ item.age }}
         </v-layout>
       </template>
-      <template v-slot:[`item.updated_at`]="{ item }">
+      <template v-slot:[`item.registration_at`]="{ item }">
         <v-layout justify-start>
-          {{ $dateFns.format(new Date(item.updated_at), 'dd MMMM yyyy HH:mm') }}
+          {{
+            $dateFns.format(
+              new Date(item.registration_at),
+              'dd MMMM yyyy HH:mm'
+            )
+          }}
         </v-layout>
       </template>
       <template v-slot:[`item.person_status`]="{ item }">
