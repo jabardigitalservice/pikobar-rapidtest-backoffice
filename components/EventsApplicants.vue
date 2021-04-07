@@ -430,14 +430,14 @@ const headers = [
     width: 200
   },
   {
-    text: 'Status Terkirim',
+    text: 'Data Terkirim ke SIM Lab',
     value: 'status_on_simlab',
     width: 200
   },
   {
-    text: 'Tanggal Terkirim ke Manlab',
+    text: 'Tanggal Terkirim ke SIM Lab',
     value: 'synchronization_at',
-    width: 200
+    width: 225
   },
   {
     text: 'Actions',
