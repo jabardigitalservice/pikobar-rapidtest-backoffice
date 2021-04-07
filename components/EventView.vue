@@ -12,11 +12,11 @@
               </v-col>
               <v-col cols="4">
                 <label class="text-subtitle-2 grey--text">
-                  Jumlah Peserta / Jumlah Hadir / Hasil Test
+                  Jumlah Peserta / Jumlah Hadir / Kirim Hasil Tes
                 </label>
                 <p class="font-weight-medium mt-2 mb-0">
                   {{ invitations_count }} / {{ attendees_count }} /
-                  {{ attendees_result_count }}
+                  {{ data.applicants_notified_result_count }}
                 </p>
               </v-col>
               <v-col cols="4">
