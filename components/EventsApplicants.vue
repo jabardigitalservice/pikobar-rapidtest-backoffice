@@ -840,6 +840,8 @@ export default {
             message: error.message,
             type: 'error'
           })
+        } finally {
+          this.$store.dispatch('events/getCurrent', this.$route.params.eventId)
         }
       }
     },
