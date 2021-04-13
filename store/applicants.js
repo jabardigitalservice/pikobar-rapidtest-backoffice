@@ -169,7 +169,7 @@ export const actions = {
       const {
         keyWords,
         sortBy,
-        sortOrder,
+        sortDesc,
         city,
         sessionId,
         startDate,
@@ -183,7 +183,7 @@ export const actions = {
           perPage: itemsPerPage,
           search: keyWords,
           sortBy: sortBy[0] || null,
-          sortOrder: sortOrder[0] ? 'desc' : 'asc',
+          sortOrder: sortDesc[0] ? 'desc' : 'asc',
           status,
           cityCode: city,
           sessionId,
