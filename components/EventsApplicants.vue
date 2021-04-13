@@ -842,6 +842,7 @@ export default {
           })
         } finally {
           this.$store.dispatch('events/getCurrent', this.$route.params.eventId)
+          this.pesertaSelected = []
         }
       }
     },
