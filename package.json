@@ -1,7 +1,7 @@
 {
-  "name": "webadmin",
+  "name": "webadmin-pikobar-pendaftaran-tes-covid-19",
   "version": "1.0.0",
-  "description": "My striking Nuxt.js project",
+  "description": "Webadmin Pikobar Pendaftaran Tes COVID-19",
   "author": "Yoga Hanggara",
   "private": true,
   "scripts": {

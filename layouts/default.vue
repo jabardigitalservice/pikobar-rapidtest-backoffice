@@ -151,7 +151,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Pendaftaran Tes Masif',
+      title: 'Pikobar Pendaftaran Tes COVID-19',
       showToast: false,
       typeToast: 'success',
       messageToast: '',

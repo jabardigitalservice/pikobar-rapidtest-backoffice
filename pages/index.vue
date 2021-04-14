@@ -2,7 +2,7 @@
   <v-flex>
     <v-card>
       <v-card-title>
-        Selamat Datang di Dashboard Pendaftaran Tes Masif PIKOBAR
+        Selamat Datang di Dashboard Pikobar Pendaftaran Tes COVID-19
       </v-card-title>
     </v-card>
   </v-flex>
