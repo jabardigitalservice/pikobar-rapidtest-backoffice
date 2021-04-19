@@ -5,11 +5,13 @@
       <v-card-text v-if="items.length > 0">
         <v-alert prominent text outlined color="blue" type="info">
           <p>
-            Berikut ini adalah data peserta yang akan dikirim ke Aplikasi SIM
-            Lab.
+            Berikut adalah data peserta yang akan dikirim ke Aplikasi Sistem
+            Informasi Manajemen Laboratorium (SIM Lab).
           </p>
           <p>
-            Data yang dikirim adalah data peserta yang telah dites.
+            Dimohon untuk memastikan bahwa data peserta yang akan dikirim sudah
+            benar. Data peserta yang sudah dikirim tidak dapat diubah, dihapus,
+            atau dikirim kembali.
           </p>
         </v-alert>
         <div>
