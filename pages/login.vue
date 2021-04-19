@@ -1,14 +1,14 @@
 <template>
   <v-app id="inspire">
     <v-main>
-      <v-row style="height: 100%;">
+      <v-row class="login-full-height">
         <v-col>
           <div class="mx-16 my-7">
             <v-img src="/pikobar-logo.png" width="176" height="60" />
           </div>
-          <v-row class="d-flex align-end" style="height: 82.5%;">
-            <v-col>
-              <div class="ml-4">
+          <v-row class="login-height-icon">
+            <v-col class="d-flex align-end">
+              <div class="ml-5">
                 <v-img src="/login-asset.svg" width="248" height="248" />
               </div>
             </v-col>
@@ -26,7 +26,7 @@
             <v-alert
               border="left"
               colored-border
-              color="#028EC6"
+              color="primary"
               class="text--disabled text-caption"
             >
               Kamu berada di Aplikasi Pikobar Pendaftaran Tes Covid-19 Jawa
@@ -35,7 +35,7 @@
             </v-alert>
           </div>
           <div>
-            <v-btn color="#028EC6" block large dark @click="login">
+            <v-btn color="primary" block large dark @click="login">
               Masuk dengan SSO
             </v-btn>
           </div>
