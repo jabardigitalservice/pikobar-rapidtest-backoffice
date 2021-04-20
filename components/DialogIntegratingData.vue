@@ -8,7 +8,7 @@
             Berikut adalah data peserta yang akan dikirim ke Aplikasi Sistem
             Informasi Manajemen Laboratorium (SIM Lab).
           </p>
-          <p>
+          <p class="red--text">
             Dimohon untuk memastikan bahwa data peserta yang akan dikirim sudah
             benar. Data peserta yang sudah dikirim tidak dapat diubah, dihapus,
             atau dikirim kembali.
@@ -19,7 +19,9 @@
             <v-data-table
               :headers="headers"
               :items="items"
-              hide-default-footer
+              :footer-props="{
+                'items-per-page-options': [50, 100, 500]
+              }"
               style="border: 1px solid #cacaca;"
             >
               <template v-slot:[`item.status_on_simlab`]="{ item }">
