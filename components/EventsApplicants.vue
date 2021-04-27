@@ -61,6 +61,7 @@
             <v-list-item
               v-for="(item, i) in [
                 { icon: 'table', format: 'xls', text: 'Excel F1' },
+                { icon: 'table', format: 'xls', text: 'Excel F2' },
                 { icon: 'table', format: 'xls', text: 'Excel Raw' }
               ]"
               :key="i"
@@ -885,9 +886,14 @@ export default {
     downloadExport(param) {
       this.modalLoader = true
       const exportFormatF1 = `/rdt/events/${this.idEvent}/participants-export-f1?format=${param.format}`
+      const exportFormatF2 = `/rdt/events/${this.idEvent}/participants-export-f2?format=${param.format}`
       const exportFormatRaw = `/rdt/events/${this.idEvent}/participants-export?format=${param.format}`
       const exportType =
-        param.text === 'Excel F1' ? exportFormatF1 : exportFormatRaw
+        param.text === 'Excel F1'
+          ? exportFormatF1
+          : param.text === 'Excel F2'
+          ? exportFormatF2
+          : exportFormatRaw
 
       this.$axios
         .get(exportType, {
@@ -907,9 +913,12 @@ export default {
           let fileName = 'unknown'
 
           if (contentDisposition) {
-            const fileNameMatch = contentDisposition.match(/filename="(.+)"/)
+            const fileNameMatch = contentDisposition.match(/filename=(.+)/)
             if (fileNameMatch.length === 2) {
-              fileName = fileNameMatch[1]
+              const data = fileNameMatch[1].includes('"')
+                ? fileNameMatch[1].slice(1, -2)
+                : fileNameMatch[1]
+              fileName = data
             }
           }
 
