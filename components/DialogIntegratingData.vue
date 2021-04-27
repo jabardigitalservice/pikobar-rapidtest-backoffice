@@ -8,11 +8,6 @@
             Berikut adalah data peserta yang akan dikirim ke Aplikasi Sistem
             Informasi Manajemen Laboratorium (SIM Lab).
           </p>
-          <p class="red--text">
-            Dimohon untuk memastikan bahwa data peserta yang akan dikirim sudah
-            benar. Data peserta yang sudah dikirim tidak dapat diubah, dihapus,
-            atau dikirim kembali.
-          </p>
         </v-alert>
         <div>
           <template>
@@ -69,17 +64,24 @@
           v-if="items.length > 0"
           color="success"
           class="ml-2 px-2"
-          @click="send"
+          @click="openWarning"
         >
           Kirim Data
         </v-btn>
       </v-card-actions>
     </v-card>
+    <dialog-integration-warning
+      :open="dialogWarning"
+      @close="closeWarning"
+      @send="send"
+    />
   </v-dialog>
 </template>
 
 <script>
+import DialogIntegrationWarning from '@/components/DialogIntegrationWarning'
 export default {
+  components: { DialogIntegrationWarning },
   props: {
     open: {
       type: Boolean,
@@ -94,6 +96,7 @@ export default {
     return {
       status: null,
       color: null,
+      dialogWarning: false,
       headers: [
         {
           text: 'Nomor Pendaftaran',
@@ -107,8 +110,14 @@ export default {
     }
   },
   methods: {
+    closeWarning() {
+      this.dialogWarning = false
+    },
     close() {
       this.$emit('close')
+    },
+    openWarning() {
+      this.dialogWarning = true
     },
     send() {
       this.$emit('send')
