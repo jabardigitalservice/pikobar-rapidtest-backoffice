@@ -20,7 +20,7 @@
               <v-col cols="12">
                 <v-text-field v-model="name" label="Nama Peserta" outlined />
               </v-col>
-              <v-col cols="12">
+              <v-col v-if="isEditApplicant" cols="12">
                 <v-text-field v-model="nik" label="NIK" outlined />
               </v-col>
               <v-col cols="12">
@@ -34,21 +34,21 @@
                   outlined
                 ></v-select>
               </v-col>
-              <v-col cols="12">
+              <v-col v-if="isEditApplicant" cols="12">
                 <v-text-field
                   v-model="phone_number"
                   label="Nomor Telepon"
                   outlined
                 />
               </v-col>
-              <v-col cols="12">
+              <v-col v-if="isEditApplicant" cols="12">
                 <v-text-field
                   v-model="city_code"
                   label="Kab/Kota Tinggal Sekarang"
                   outlined
                 />
               </v-col>
-              <v-col cols="12">
+              <v-col v-if="isEditApplicant" cols="12">
                 <v-text-field
                   v-model="address"
                   label="Alamat Tempat Tinggal Sekarang"
@@ -56,6 +56,13 @@
                 />
               </v-col>
               <v-col cols="12">
+                <v-text-field
+                  v-model="workPlace"
+                  label="Instansi Tempat Bekerja"
+                  outlined
+                />
+              </v-col>
+              <v-col v-if="isEditApplicant" cols="12">
                 <v-select
                   v-model="status"
                   :items="[
@@ -95,6 +102,11 @@ export default {
     recordId: {
       type: Number,
       default: null
+    },
+
+    isEditApplicant: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -107,7 +119,8 @@ export default {
       city_code: null,
       address: null,
       phone_number: null,
-      status: null
+      status: null,
+      workPlace: null
     }
   },
 
@@ -132,6 +145,7 @@ export default {
       this.address = data.address
       this.phone_number = data.phone_number
       this.status = data.status
+      this.workPlace = data.workplace_name
     },
 
     async save() {
@@ -145,7 +159,8 @@ export default {
           city_code: this.city_code,
           address: this.address,
           phone_number: this.phone_number,
-          status: this.status
+          status: this.status,
+          workplace_name: this.workPlace
         })
 
         this.$emit('save')
