@@ -398,6 +398,7 @@
     <dialog-integrating-data
       :open="integratingModal"
       :items="incompleteResultTest"
+      :loading="integratingLoading"
       @close="closeDialogIntegratingData"
       @send="integrateData"
     />
@@ -783,12 +784,17 @@ export default {
     closeDialogIntegratingData() {
       this.integratingModal = false
     },
-    openModalIntegratingData() {
+    async openModalIntegratingData() {
       this.integratingModal = true
-      const data = this.records.filter(
+      this.integratingLoading = true
+      const getAllDataParticipant = await this.$axios.$get(
+        `/rdt/events/${this.$route.params.eventId}/participants`
+      )
+      const data = getAllDataParticipant.data.filter(
         (item) => item.attended_at !== null && item.synchronization_at === null
       )
       this.incompleteResultTest = data
+      this.integratingLoading = false
     },
     closeDialogWarning() {
       this.blastNotifModalWarning = false
