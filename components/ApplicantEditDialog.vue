@@ -65,11 +65,10 @@
               <v-col v-if="isEditApplicant" cols="12">
                 <v-select
                   v-model="status"
-                  :items="[
-                    { text: 'Calon Peserta', value: 'NEW' },
-                    { text: 'Disetujui', value: 'APPROVED' }
-                  ]"
-                  label="Status"
+                  :items="statusOptions"
+                  item-text="text"
+                  item-value="value"
+                  label="Status Kesehatan"
                   outlined
                 ></v-select>
               </v-col>
@@ -92,6 +91,7 @@
 </template>
 
 <script>
+import { STATUS_OPTIONS } from '@/utilities/constant'
 export default {
   props: {
     open: {
@@ -124,6 +124,12 @@ export default {
     }
   },
 
+  computed: {
+    statusOptions() {
+      return STATUS_OPTIONS
+    }
+  },
+
   watch: {
     recordId(value) {
       if (value) {
@@ -144,7 +150,7 @@ export default {
       this.city_code = data.city_code
       this.address = data.address
       this.phone_number = data.phone_number
-      this.status = data.status
+      this.status = data.person_status
       this.workPlace = data.workplace_name
     },
 
@@ -159,7 +165,7 @@ export default {
           city_code: this.city_code,
           address: this.address,
           phone_number: this.phone_number,
-          status: this.status,
+          person_status: this.status,
           workplace_name: this.workPlace
         })
 
