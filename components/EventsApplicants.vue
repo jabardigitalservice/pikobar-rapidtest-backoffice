@@ -790,10 +790,10 @@ export default {
       const getAllDataParticipant = await this.$axios.$get(
         `/rdt/events/${this.$route.params.eventId}/participants`
       )
-      const data = getAllDataParticipant.data.filter(
+      const participantFiltered = getAllDataParticipant.data.filter(
         (item) => item.attended_at !== null && item.synchronization_at === null
       )
-      this.incompleteResultTest = data
+      this.incompleteResultTest = participantFiltered
       this.integratingLoading = false
     },
     closeDialogWarning() {
