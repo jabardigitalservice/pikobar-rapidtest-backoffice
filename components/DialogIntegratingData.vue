@@ -12,7 +12,7 @@
           ></v-progress-circular>
         </div>
         <div v-else>
-          <div v-if="items.length > 0">
+          <div v-if="items.length">
             <v-alert prominent text outlined color="blue" type="info">
               <p>
                 Berikut adalah data peserta yang akan dikirim ke Aplikasi Sistem
@@ -55,7 +55,7 @@
               </v-data-table>
             </template>
           </div>
-          <div v-else-if="items.length < 1">
+          <div v-else-if="!items.length">
             <v-alert text outlined color="deep-orange">
               <p>
                 Mohon maaf seluruh data peserta yang sudah dites telah dikirim
