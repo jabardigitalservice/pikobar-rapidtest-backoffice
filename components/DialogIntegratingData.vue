@@ -76,7 +76,7 @@
             Batal
           </v-btn>
           <v-btn
-            v-if="items.length > 0"
+            v-if="items.length"
             color="success"
             class="ml-2 px-2"
             @click="openWarning"
