@@ -17,8 +17,8 @@
       }"
     >
       <template slot="top">
-        <div class="d-flex">
-          <v-col cols="auto">
+        <div class="d-flex flex-wrap">
+          <v-col sm="12" md="12" lg="3">
             <v-text-field
               v-model="searchKey"
               label="Nama Kegiatan"
@@ -28,7 +28,7 @@
               hide-details
             />
           </v-col>
-          <v-col cols="auto">
+          <v-col sm="12" md="12" lg="3">
             <pkbr-select
               v-model="stat"
               :items="[
@@ -41,8 +41,20 @@
               hide-details
             />
           </v-col>
-          <v-spacer></v-spacer>
-          <v-col cols="auto">
+          <v-col sm="12" md="12" lg="3">
+            <pkbr-select
+              v-model="city"
+              :items="getKabkot"
+              label="Kab./Kota"
+              name="Kab./Kota"
+              placeholder="Semua Kab./Kota"
+              item-text="name"
+              item-value="code"
+              hide-details
+              allow-null
+            />
+          </v-col>
+          <v-col sm="12" md="12" lg="3" class="d-flex justify-end">
             <v-btn
               v-if="allow.includes('create-events')"
               color="primary"
@@ -101,6 +113,7 @@
 
 <script>
 import { isEqual } from 'lodash'
+import { mapGetters } from 'vuex'
 import {
   SUCCESS_DELETE,
   FAILED_DELETE,
@@ -153,6 +166,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters('area', ['getKabkot']),
     confirmDeleteMsg() {
       return CONFIRM_DELETE + this.selectedEvent.id
     },
@@ -179,7 +193,8 @@ export default {
         this.options = {
           ...this.options,
           keyWords: this.searchKey,
-          status: value
+          status: value,
+          city: this.city
         }
       },
       get() {
@@ -192,11 +207,26 @@ export default {
         this.options = {
           ...this.options,
           status: this.stat,
-          keyWords: value
+          keyWords: value,
+          city: this.city
         }
       },
       get() {
         return this.$route.query.keyWords
+      }
+    },
+    city: {
+      async set(value) {
+        await this.$store.dispatch('events/resetOptions')
+        this.options = {
+          ...this.options,
+          status: this.stat,
+          keyWords: this.searchKey,
+          city: value
+        }
+      },
+      get() {
+        return this.$route.query.city
       }
     }
   },
