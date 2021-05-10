@@ -941,57 +941,57 @@ export default {
       const sample = await this.$axios.$get(`/rdt/invitation/${id}`)
       this.labCodeSample = sample.data.lab_code_sample
     },
-    downloadExport(param) {
-      this.modalLoader = true
-      const exportFormatF1 = `/rdt/events/${this.idEvent}/participants-export-f1?format=${param.format}`
-      const exportFormatF2 = `/rdt/events/${this.idEvent}/participants-export-f2?format=${param.format}`
-      const exportFormatRaw = `/rdt/events/${this.idEvent}/participants-export?format=${param.format}`
-      const exportType =
-        param.text === 'Excel F1'
-          ? exportFormatF1
-          : param.text === 'Excel F2'
-          ? exportFormatF2
-          : exportFormatRaw
+    async downloadExport(param) {
+      try {
+        this.modalLoader = true
+        const exportFormatF1 = `/rdt/events/${this.idEvent}/participants-export-f1?format=${param.format}`
+        const exportFormatF2 = `/rdt/events/${this.idEvent}/participants-export-f2?format=${param.format}`
+        const exportFormatRaw = `/rdt/events/${this.idEvent}/participants-export?format=${param.format}`
+        const exportType =
+          param.text === 'Excel F1'
+            ? exportFormatF1
+            : param.text === 'Excel F2'
+            ? exportFormatF2
+            : exportFormatRaw
 
-      this.$axios
-        .get(exportType, {
+        const response = await this.$axios.get(exportType, {
           responseType: 'blob'
         })
-        .then((response) => {
-          // @TODO hacky solution
-          // eslint-disable-next-line no-new
-          const blob = new Blob([response.data], { type: response.data.type })
+        const blob = new Blob([response.data], { type: response.data.type })
 
-          const url = window.URL.createObjectURL(blob)
-          const link = document.createElement('a')
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
 
-          link.href = url
+        link.href = url
 
-          const contentDisposition = response.headers['content-disposition']
-          let fileName = 'unknown'
+        const contentDisposition = response.headers['content-disposition']
+        let fileName = 'unknown'
 
-          if (contentDisposition) {
-            const fileNameMatch = contentDisposition.match(/filename=(.+)/)
-            if (fileNameMatch.length === 2) {
-              const data = fileNameMatch[1].includes('"')
-                ? fileNameMatch[1].slice(1, -2)
-                : fileNameMatch[1]
-              fileName = data
-            }
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename=(.+)/)
+          if (fileNameMatch.length === 2) {
+            const data = fileNameMatch[1].includes('"')
+              ? fileNameMatch[1].slice(1, -2)
+              : fileNameMatch[1]
+            fileName = data
           }
+        }
 
-          link.setAttribute('download', fileName)
-          document.body.appendChild(link)
-          link.click()
-          link.remove()
-          window.URL.revokeObjectURL(url)
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+        window.URL.revokeObjectURL(url)
 
-          this.modalLoader = false
+        this.modalLoader = false
+      } catch (error) {
+        this.$toast.show({
+          message:
+            'Export gagal, silahkan lengkapi Kode Sample untuk dapat melakukan Export.',
+          type: 'error'
         })
-        .catch(() => {
-          alert('Telah terjadi sebuah kesalahan. Silahkan coba ulangi kembali.')
-          this.modalLoader = false
-        })
+        this.modalLoader = false
+      }
     }
   }
 }
