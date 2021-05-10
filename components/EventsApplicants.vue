@@ -987,6 +987,7 @@ export default {
       } catch (error) {
         this.$toast.show({
           message:
+            error.response.message ||
             'Export gagal, silahkan lengkapi Kode Sample untuk dapat melakukan Export.',
           type: 'error'
         })
