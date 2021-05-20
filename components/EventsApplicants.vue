@@ -409,9 +409,7 @@
 import { isEqual } from 'lodash'
 import { getChipColor } from '@/utilities/formater'
 import {
-  EVENT_BLAST_EMPTY,
   EVENT_BLAST_SUCCESS,
-  EVENT_PARTICIPANTS_EMPTY,
   SUCCESS_IMPORT,
   FAILED_IMPORT,
   SET_LABCODE_SUCCESS,
@@ -826,14 +824,10 @@ export default {
       this.ImportModalTest = true
     },
     sendNotif(data) {
-      if (data.length === 0) {
-        this.blastNotify(null, `send${data.type.split(' ').join('')}`)
-      } else {
-        this.blastNotify(
-          this.pesertaSelected,
-          `send${data.type.split(' ').join('')}`
-        )
-      }
+      this.blastNotify(
+        this.pesertaSelected,
+        `send${data.type.split(' ').join('')}`
+      )
     },
     closeDialogImport() {
       this.ImportModalTest = false
@@ -864,45 +858,40 @@ export default {
       }
     },
     async blastNotify(invitationsIds, type) {
-      if (this.records.length === 0) {
-        this.$toast.show({
-          message: EVENT_PARTICIPANTS_EMPTY,
-          type: 'error'
+      try {
+        const typeBlast = type || 'sendUndangan'
+        const target =
+          !!invitationsIds && invitationsIds.length > 0 ? 'SELECTED' : 'ALL'
+        // eslint-disable-next-line camelcase
+        const invitations_ids =
+          !!invitationsIds && invitationsIds.length > 0
+            ? invitationsIds.map((inv) => inv.id)
+            : []
+        await this.$store.dispatch(`blastNotif/${typeBlast}`, {
+          idEvent: this.idEvent,
+          target,
+          invitations_ids
         })
-      } else if (!!invitationsIds && invitationsIds.length === 0) {
         this.$toast.show({
-          message: EVENT_BLAST_EMPTY,
-          type: 'error'
+          message: EVENT_BLAST_SUCCESS,
+          type: 'success'
         })
-      } else {
-        try {
-          const typeBlast = type || 'sendUndangan'
-          const target =
-            !!invitationsIds && invitationsIds.length > 0 ? 'SELECTED' : 'ALL'
-          // eslint-disable-next-line camelcase
-          const invitations_ids =
-            !!invitationsIds && invitationsIds.length > 0
-              ? invitationsIds.map((inv) => inv.id)
-              : null
-          await this.$store.dispatch(`blastNotif/${typeBlast}`, {
-            idEvent: this.idEvent,
-            target,
-            invitations_ids
-          })
+      } catch (error) {
+        if (error.response.status === 422) {
           this.$toast.show({
-            message: EVENT_BLAST_SUCCESS,
-            type: 'success'
+            message: error.response.data.errors.blast_failed[0],
+            type: 'error'
           })
-          this.blastNotifModal = false
-        } catch (error) {
+        } else {
           this.$toast.show({
             message: error.message,
             type: 'error'
           })
-        } finally {
-          this.$store.dispatch('events/getCurrent', this.$route.params.eventId)
-          this.pesertaSelected = []
         }
+      } finally {
+        this.blastNotifModal = false
+        this.$store.dispatch('events/getCurrent', this.$route.params.eventId)
+        this.pesertaSelected = []
       }
     },
     modalEditLabCodeOpen(id) {

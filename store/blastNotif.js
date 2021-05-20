@@ -43,7 +43,7 @@ export const actions = {
         }
       )
     } catch (e) {
-      // console.log(e)
+      return Promise.reject(e)
     } finally {
       commit('SET_LOADING', false)
     }
