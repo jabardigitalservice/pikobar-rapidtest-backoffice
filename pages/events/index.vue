@@ -55,6 +55,8 @@ export default {
       query.status = value.status
       query.keyWords = value.keyWords
       query.city = value.city
+      query.startDate = value.startDate
+      query.endDate = value.endDate
       query = pickBy(query, identity)
       this.$router
         .replace({

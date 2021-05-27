@@ -1,6 +1,18 @@
 /* eslint-disable vue/valid-v-bind */
 <template>
   <div style="width: 100%;">
+    <v-col sm="12" md="12" lg="12" class="d-flex justify-end mt-n12">
+      <v-btn
+        v-if="allow.includes('create-events')"
+        color="primary"
+        to="/events/create"
+      >
+        <v-icon class="mr-1">
+          mdi-plus-circle
+        </v-icon>
+        Tambah Kegiatan
+      </v-btn>
+    </v-col>
     <v-data-table
       class="v-card v-sheet pkbr-table sticky-last"
       :headers="headers"
@@ -22,13 +34,13 @@
             <v-text-field
               v-model="searchKey"
               label="Nama Kegiatan"
-              clearable
+              placeholder="Nama Kegiatan"
               outlined
               dense
               hide-details
             />
           </v-col>
-          <v-col sm="12" md="12" lg="3">
+          <v-col sm="12" md="12" lg="2">
             <pkbr-select
               v-model="stat"
               :items="[
@@ -54,17 +66,21 @@
               allow-null
             />
           </v-col>
-          <v-col sm="12" md="12" lg="3" class="d-flex justify-end">
-            <v-btn
-              v-if="allow.includes('create-events')"
-              color="primary"
-              to="/events/create"
-            >
-              <v-icon class="mr-1">
-                mdi-plus-circle
-              </v-icon>
-              Tambah Kegiatan
-            </v-btn>
+          <v-col sm="12" md="12" lg="2">
+            <pkbr-input-date
+              v-model="startDate"
+              label="Tanggal Mulai"
+              name="Tanggal Mulai"
+              placeholder="Tanggal Mulai"
+            />
+          </v-col>
+          <v-col sm="12" md="12" lg="2">
+            <pkbr-input-date
+              v-model="endDate"
+              label="Tanggal Berakhir"
+              name="Tanggal Berakhir"
+              placeholder="Tanggal Berakhir"
+            />
           </v-col>
         </div>
       </template>
@@ -227,6 +243,38 @@ export default {
       },
       get() {
         return this.$route.query.city
+      }
+    },
+    startDate: {
+      async set(value) {
+        await this.$store.dispatch('events/resetOptions')
+        this.options = {
+          ...this.options,
+          status: this.stat,
+          keyWords: this.searchKey,
+          city: this.city,
+          endDate: this.endDate,
+          startDate: value
+        }
+      },
+      get() {
+        return this.$route.query.startDate
+      }
+    },
+    endDate: {
+      async set(value) {
+        await this.$store.dispatch('events/resetOptions')
+        this.options = {
+          ...this.options,
+          status: this.stat,
+          keyWords: this.searchKey,
+          city: this.city,
+          startDate: this.startDate,
+          endDate: value
+        }
+      },
+      get() {
+        return this.$route.query.endDate
       }
     }
   },
