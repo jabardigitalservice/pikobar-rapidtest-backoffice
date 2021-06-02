@@ -96,15 +96,40 @@
     >
       <template slot="top">
         <div class="d-flex">
-          <v-col cols="6">
+          <v-col sm="12" md="12" lg="6">
             <v-text-field
-              v-model="searchKey"
+              v-model="listQuery.searchKey"
               label="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
+              placeholder="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
               clearable
               outlined
               dense
               hide-details
             />
+          </v-col>
+          <v-col sm="12" md="12" lg="2">
+            <pkbr-input-date
+              v-model="listQuery.startDate"
+              label="Tanggal Mulai"
+              name="Tanggal Mulai"
+              placeholder="Tanggal Mulai"
+            />
+          </v-col>
+          <v-col sm="12" md="12" lg="2">
+            <pkbr-input-date
+              v-model="listQuery.endDate"
+              label="Tanggal Berakhir"
+              name="Tanggal Berakhir"
+              placeholder="Tanggal Berakhir"
+            />
+          </v-col>
+          <v-col sm="12" md="12" lg="2">
+            <v-btn color="primary" @click="searchFilter">
+              Cari
+            </v-btn>
+            <v-btn color="primary" @click="doFilterReset">
+              Reset
+            </v-btn>
           </v-col>
         </div>
       </template>
@@ -406,7 +431,6 @@
 </template>
 
 <script>
-import { isEqual } from 'lodash'
 import { getChipColor } from '@/utilities/formater'
 import {
   EVENT_BLAST_SUCCESS,
@@ -538,7 +562,12 @@ export default {
       integratingLoading: false,
       incompleteResultTest: [],
       editApplicant: false,
-      idApplicant: null
+      idApplicant: null,
+      listQuery: {
+        searchKey: null,
+        startDate: null,
+        endDate: null
+      }
     }
   },
 
@@ -565,26 +594,6 @@ export default {
     },
     totalItems() {
       return this.$store.getters['eventParticipants/getTotalData']
-    },
-    searchKey: {
-      async set(value) {
-        await this.$store.dispatch('eventParticipants/resetOptions')
-        this.options = {
-          ...this.options,
-          keyWords: value
-        }
-      },
-      get() {
-        return this.$route.query.keyWords
-      }
-    }
-  },
-
-  watch: {
-    options(value, oldValue) {
-      if (!isEqual(oldValue, value)) {
-        this.$emit('optionChanged', value)
-      }
     }
   },
 
@@ -596,9 +605,6 @@ export default {
     options.itemsPerPage = this.$route.query.perPage
       ? parseInt(this.$route.query.perPage)
       : DEFAULT_PAGINATION.itemsPerPage
-    options.sortBy = this.$route.query.sortBy
-      ? [this.$route.query.sortBy]
-      : DEFAULT_FILTER.sortBy
     options.sortDesc = this.$route.query.sortOrder
       ? [this.$route.query.sortOrder === 'desc']
       : DEFAULT_FILTER.sortDesc
@@ -610,6 +616,27 @@ export default {
   },
 
   methods: {
+    async searchFilter() {
+      await this.$store.dispatch('eventParticipants/resetOptions')
+      this.options = {
+        ...this.options,
+        keyWords: this.listQuery.searchKey,
+        startDate: this.listQuery.startDate,
+        endDate: this.listQuery.endDate
+      }
+      this.$emit('optionChanged', this.options)
+    },
+    async doFilterReset() {
+      Object.assign(this.$data.listQuery, this.$options.data().listQuery)
+      await this.$store.dispatch('eventParticipants/resetOptions')
+      this.options = {
+        ...this.options,
+        keyWords: null,
+        startDate: null,
+        endDate: null
+      }
+      this.$emit('optionChanged', this.options)
+    },
     async resetDataCheckin(payload) {
       try {
         await this.$store.dispatch(
