@@ -85,6 +85,8 @@ export default {
       query.sortBy = value.sortBy.length > 0 ? value.sortBy[0] : null
       query.sortOrder = value.sortDesc[0] ? 'desc' : 'asc'
       query.keyWords = value.keyWords
+      query.startDate = value.startDate
+      query.endDate = value.endDate
       query = pickBy(query, identity)
       this.$router
         .replace({

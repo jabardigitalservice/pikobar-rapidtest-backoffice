@@ -32,7 +32,7 @@
         <div class="d-flex flex-wrap">
           <v-col sm="12" md="12" lg="3">
             <v-text-field
-              v-model="searchKey"
+              v-model="listQuery.searchKey"
               label="Nama Kegiatan"
               placeholder="Nama Kegiatan"
               outlined
@@ -42,7 +42,7 @@
           </v-col>
           <v-col sm="12" md="12" lg="2">
             <pkbr-select
-              v-model="stat"
+              v-model="listQuery.status"
               :items="[
                 { text: 'Semua', value: 'all' },
                 { text: 'Draft', value: 'draft' },
@@ -55,7 +55,7 @@
           </v-col>
           <v-col sm="12" md="12" lg="3">
             <pkbr-select
-              v-model="city"
+              v-model="listQuery.city"
               :items="getKabkot"
               label="Kab./Kota"
               name="Kab./Kota"
@@ -67,20 +67,34 @@
             />
           </v-col>
           <v-col sm="12" md="12" lg="2">
-            <pkbr-input-date
-              v-model="startDate"
-              label="Tanggal Mulai"
-              name="Tanggal Mulai"
-              placeholder="Tanggal Mulai"
-            />
+            <ValidationObserver ref="startDate">
+              <pkbr-input-date
+                v-model="listQuery.startDate"
+                label="Tanggal Mulai"
+                name="Tanggal Mulai"
+                placeholder="Tanggal Mulai"
+                :rules="ruleValidationStartDate"
+              />
+            </ValidationObserver>
           </v-col>
           <v-col sm="12" md="12" lg="2">
-            <pkbr-input-date
-              v-model="endDate"
-              label="Tanggal Berakhir"
-              name="Tanggal Berakhir"
-              placeholder="Tanggal Berakhir"
-            />
+            <ValidationObserver ref="endDate">
+              <pkbr-input-date
+                v-model="listQuery.endDate"
+                label="Tanggal Berakhir"
+                name="Tanggal Berakhir"
+                placeholder="Tanggal Berakhir"
+                :rules="ruleValidationEndDate"
+              />
+            </ValidationObserver>
+          </v-col>
+          <v-col sm="12" md="12" lg="2" class="mt-n8">
+            <v-btn color="primary" @click="searchFilter">
+              Cari
+            </v-btn>
+            <v-btn color="primary" @click="doFilterReset">
+              Reset
+            </v-btn>
           </v-col>
         </div>
       </template>
@@ -128,13 +142,14 @@
 </template>
 
 <script>
-import { isEqual } from 'lodash'
 import { mapGetters } from 'vuex'
 import {
   SUCCESS_DELETE,
   FAILED_DELETE,
-  CONFIRM_DELETE
+  CONFIRM_DELETE,
+  DEFAULT_FILTER
 } from '@/utilities/constant'
+import { ValidationObserver } from 'vee-validate'
 import { getChipColor } from '@/utilities/formater'
 import EventDeleteDialog from '@/components/EventDeleteDialog'
 
@@ -152,7 +167,8 @@ const headers = [
 
 export default {
   components: {
-    EventDeleteDialog
+    EventDeleteDialog,
+    ValidationObserver
   },
   filters: {
     getChipColor
@@ -173,11 +189,20 @@ export default {
   data() {
     return {
       headers,
+      deleteModal: false,
+      ruleValidationStartDate: '',
+      ruleValidationEndDate: '',
       selectedEvent: {
         id: null,
         name: null
       },
-      deleteModal: false
+      listQuery: {
+        searchKey: null,
+        status: DEFAULT_FILTER.status,
+        city: null,
+        startDate: null,
+        endDate: null
+      }
     }
   },
 
@@ -202,88 +227,15 @@ export default {
     },
     totalItems() {
       return this.$store.getters['events/getTotalData']
-    },
-    stat: {
-      async set(value) {
-        await this.$store.dispatch('events/resetOptions')
-        this.options = {
-          ...this.options,
-          keyWords: this.searchKey,
-          status: value,
-          city: this.city
-        }
-      },
-      get() {
-        return this.$route.query.status
-      }
-    },
-    searchKey: {
-      async set(value) {
-        await this.$store.dispatch('events/resetOptions')
-        this.options = {
-          ...this.options,
-          status: this.stat,
-          keyWords: value,
-          city: this.city
-        }
-      },
-      get() {
-        return this.$route.query.keyWords
-      }
-    },
-    city: {
-      async set(value) {
-        await this.$store.dispatch('events/resetOptions')
-        this.options = {
-          ...this.options,
-          status: this.stat,
-          keyWords: this.searchKey,
-          city: value
-        }
-      },
-      get() {
-        return this.$route.query.city
-      }
-    },
-    startDate: {
-      async set(value) {
-        await this.$store.dispatch('events/resetOptions')
-        this.options = {
-          ...this.options,
-          status: this.stat,
-          keyWords: this.searchKey,
-          city: this.city,
-          endDate: this.endDate,
-          startDate: value
-        }
-      },
-      get() {
-        return this.$route.query.startDate
-      }
-    },
-    endDate: {
-      async set(value) {
-        await this.$store.dispatch('events/resetOptions')
-        this.options = {
-          ...this.options,
-          status: this.stat,
-          keyWords: this.searchKey,
-          city: this.city,
-          startDate: this.startDate,
-          endDate: value
-        }
-      },
-      get() {
-        return this.$route.query.endDate
-      }
     }
   },
 
   watch: {
-    options(value, oldValue) {
-      if (!isEqual(oldValue, value)) {
-        this.$emit('optionChanged', value)
-      }
+    'listQuery.startDate'(value) {
+      this.ruleValidationEndDate = value ? 'required' : ''
+    },
+    'listQuery.endDate'(value) {
+      this.ruleValidationStartDate = value ? 'required' : ''
     }
   },
 
@@ -312,6 +264,34 @@ export default {
   },
 
   methods: {
+    async searchFilter() {
+      const validStartDate = await this.$refs.startDate.validate()
+      const validEndDate = await this.$refs.endDate.validate()
+      if (validStartDate && validEndDate) {
+        await this.$store.dispatch('events/resetOptions')
+        this.options = {
+          ...this.options,
+          status: this.listQuery.status,
+          keyWords: this.listQuery.searchKey,
+          city: this.listQuery.city,
+          startDate: this.listQuery.startDate,
+          endDate: this.listQuery.endDate
+        }
+        this.$emit('optionChanged', this.options)
+      }
+    },
+    async doFilterReset() {
+      Object.assign(this.$data.listQuery, this.$options.data().listQuery)
+      await this.$store.dispatch('events/resetOptions')
+      this.options = {
+        ...this.options,
+        keyWords: null,
+        city: null,
+        startDate: null,
+        endDate: null
+      }
+      this.$emit('optionChanged', this.options)
+    },
     formatTanggal(startTanggal, endTanggal) {
       const start = this.$dateFns.format(new Date(startTanggal), 'dd MMM yyyy')
       const end = this.$dateFns.format(new Date(endTanggal), 'dd MMM yyyy')
