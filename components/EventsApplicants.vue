@@ -95,8 +95,8 @@
       }"
     >
       <template slot="top">
-        <div class="d-flex">
-          <v-col sm="12" md="12" lg="6">
+        <div class="d-flex flex-wrap">
+          <v-col lg="6" md="12" sm="12">
             <v-text-field
               v-model="listQuery.searchKey"
               label="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
@@ -107,23 +107,29 @@
               hide-details
             />
           </v-col>
-          <v-col sm="12" md="12" lg="2">
-            <pkbr-input-date
-              v-model="listQuery.startDate"
-              label="Tanggal Mulai"
-              name="Tanggal Mulai"
-              placeholder="Tanggal Mulai"
-            />
+          <v-col lg="2" md="12" sm="12">
+            <ValidationObserver ref="startDate">
+              <pkbr-input-date
+                v-model="listQuery.startDate"
+                label="Tanggal Mulai"
+                name="Tanggal Mulai"
+                placeholder="Tanggal Mulai"
+                :rules="ruleValidationStartDate"
+              />
+            </ValidationObserver>
           </v-col>
-          <v-col sm="12" md="12" lg="2">
-            <pkbr-input-date
-              v-model="listQuery.endDate"
-              label="Tanggal Berakhir"
-              name="Tanggal Berakhir"
-              placeholder="Tanggal Berakhir"
-            />
+          <v-col lg="2" md="12" sm="12">
+            <ValidationObserver ref="endDate">
+              <pkbr-input-date
+                v-model="listQuery.endDate"
+                label="Tanggal Berakhir"
+                name="Tanggal Berakhir"
+                placeholder="Tanggal Berakhir"
+                :rules="ruleValidationEndDate"
+              />
+            </ValidationObserver>
           </v-col>
-          <v-col sm="12" md="12" lg="2">
+          <v-col lg="2" md="12" sm="12">
             <v-btn color="primary" @click="searchFilter">
               Cari
             </v-btn>
@@ -431,6 +437,7 @@
 </template>
 
 <script>
+import { ValidationObserver } from 'vee-validate'
 import { getChipColor } from '@/utilities/formater'
 import {
   EVENT_BLAST_SUCCESS,
@@ -520,7 +527,8 @@ export default {
     EventApplicantUncheckDialog,
     EventApplicantUncheckWarningDialog,
     DialogIntegratingData,
-    ApplicantEditDialog
+    ApplicantEditDialog,
+    ValidationObserver
   },
   filters: {
     getChipColor
@@ -563,6 +571,8 @@ export default {
       incompleteResultTest: [],
       editApplicant: false,
       idApplicant: null,
+      ruleValidationStartDate: '',
+      ruleValidationEndDate: '',
       listQuery: {
         searchKey: null,
         startDate: null,
@@ -597,6 +607,15 @@ export default {
     }
   },
 
+  watch: {
+    'listQuery.startDate'(value) {
+      this.ruleValidationEndDate = value ? 'required' : ''
+    },
+    'listQuery.endDate'(value) {
+      this.ruleValidationStartDate = value ? 'required' : ''
+    }
+  },
+
   mounted() {
     const options = { ...this.options }
     options.page = this.$route.query.page
@@ -617,14 +636,18 @@ export default {
 
   methods: {
     async searchFilter() {
-      await this.$store.dispatch('eventParticipants/resetOptions')
-      this.options = {
-        ...this.options,
-        keyWords: this.listQuery.searchKey,
-        startDate: this.listQuery.startDate,
-        endDate: this.listQuery.endDate
+      const validStartDate = await this.$refs.startDate.validate()
+      const validEndDate = await this.$refs.endDate.validate()
+      if (validStartDate && validEndDate) {
+        await this.$store.dispatch('eventParticipants/resetOptions')
+        this.options = {
+          ...this.options,
+          keyWords: this.listQuery.searchKey,
+          startDate: this.listQuery.startDate,
+          endDate: this.listQuery.endDate
+        }
+        this.$emit('optionChanged', this.options)
       }
-      this.$emit('optionChanged', this.options)
     },
     async doFilterReset() {
       Object.assign(this.$data.listQuery, this.$options.data().listQuery)
