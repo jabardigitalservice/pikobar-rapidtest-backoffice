@@ -655,9 +655,8 @@ export default {
         this.$emit('optionChanged', this.options)
       }
     },
-    async doFilterReset() {
+    doFilterReset() {
       Object.assign(this.$data.listQuery, this.$options.data().listQuery)
-      await this.$store.dispatch('eventParticipants/resetOptions')
       this.options = {
         ...this.options,
         keyWords: null,
