@@ -18,6 +18,7 @@
         <v-btn
           v-if="allow.includes('notify-participants')"
           color="primary"
+          outlined
           @click="openModalNotif('Undangan')"
         >
           <v-icon class="mr-1">mdi-email-send</v-icon>
@@ -25,18 +26,20 @@
         </v-btn>
         <v-btn
           v-if="allow.includes('notify-participants')"
-          color="success"
+          color="primary"
+          outlined
           @click="openModalNotif('Hasil Test')"
         >
-          <v-icon class="mr-1">mdi-file-send-outline</v-icon>
+          <v-icon class="mr-1">mdi-email-send-outline</v-icon>
           Kirim Hasil Test
         </v-btn>
         <v-btn
           v-if="configIntegration === 'true'"
-          color="warning"
+          color="primary"
+          outlined
           @click="openModalIntegratingData"
         >
-          <v-icon class="mr-1">mdi-file-send-outline</v-icon>
+          <v-icon class="mr-1">mdi-email-sync-outline</v-icon>
           Kirim data
         </v-btn>
       </v-col>
@@ -44,15 +47,23 @@
       <v-col cols="auto">
         <v-btn
           v-if="allow.includes('manage-events')"
-          color="success"
+          color="primary"
+          outlined
           @click="openModalImportHasil"
         >
-          <v-icon class="mr-1">mdi-file-import-outline</v-icon>
+          <v-icon class="mr-1">mdi-download</v-icon>
           Import Hasil Test
         </v-btn>
         <v-menu bottom offset-y>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn class="pr-1" v-bind="attrs" color="error" v-on="on">
+            <v-btn
+              class="pr-1"
+              v-bind="attrs"
+              outlined
+              color="primary"
+              v-on="on"
+            >
+              <v-icon class="ml-1">mdi-upload</v-icon>
               Export
               <v-icon class="ml-1">mdi-menu-down</v-icon>
             </v-btn>
