@@ -143,6 +143,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { isEqual } from 'lodash'
 import {
   SUCCESS_DELETE,
   FAILED_DELETE,
@@ -232,6 +233,11 @@ export default {
   },
 
   watch: {
+    options(value, oldValue) {
+      if (!isEqual(oldValue, value)) {
+        this.$emit('optionChanged', value)
+      }
+    },
     'listQuery.startDate'(value) {
       this.ruleValidationEndDate = value ? 'required' : ''
     },

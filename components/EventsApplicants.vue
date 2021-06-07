@@ -437,6 +437,7 @@
 </template>
 
 <script>
+import { isEqual } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
 import { getChipColor } from '@/utilities/formater'
 import {
@@ -608,6 +609,11 @@ export default {
   },
 
   watch: {
+    options(value, oldValue) {
+      if (!isEqual(oldValue, value)) {
+        this.$emit('optionChanged', value)
+      }
+    },
     'listQuery.startDate'(value) {
       this.ruleValidationEndDate = value ? 'required' : ''
     },
