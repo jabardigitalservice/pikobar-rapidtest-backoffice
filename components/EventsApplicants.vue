@@ -96,7 +96,7 @@
     >
       <template slot="top">
         <div class="d-flex flex-wrap">
-          <v-col lg="6" md="12" sm="12">
+          <v-col lg="5" md="12" sm="12">
             <v-text-field
               v-model="listQuery.searchKey"
               label="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
@@ -129,7 +129,7 @@
               />
             </ValidationObserver>
           </v-col>
-          <v-col lg="2" md="12" sm="12">
+          <v-col lg="3" md="12" sm="12">
             <v-btn color="primary" @click="searchFilter">
               Cari
             </v-btn>

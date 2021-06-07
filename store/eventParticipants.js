@@ -36,8 +36,7 @@ export const mutations = {
   },
   RESET_PAGINATION(state) {
     const s = state
-    s.pagination.page = 1
-    s.pagination.itemsPerPage = 10
+    s.pagination = DEFAULT_PAGINATION
   },
   SET_FILTER(state, payload) {
     const s = state
@@ -56,7 +55,9 @@ export const mutations = {
       mustSort: payload.mustSort,
       sortBy: payload.sortBy,
       sortDesc: payload.sortDesc,
-      keyWords: payload.keyWords
+      keyWords: payload.keyWords,
+      startDate: payload.startDate,
+      endDate: payload.endDate
     }
     s.pagination = {
       itemsPerPage: payload.itemsPerPage - 0,
@@ -139,14 +140,16 @@ export const actions = {
     try {
       const { pagination, filter } = state
       const { page, itemsPerPage } = pagination
-      const { keyWords, sortBy, sortDesc } = filter
+      const { keyWords, sortBy, sortDesc, startDate, endDate } = filter
       const query = mapKeys(
         {
           page,
           perPage: itemsPerPage,
           search: keyWords,
           sortBy: sortBy[0] || null,
-          sortOrder: sortDesc[0] ? 'desc' : 'asc'
+          sortOrder: sortDesc[0] ? 'desc' : 'asc',
+          startDate,
+          endDate
         },
         (value, key) => snakeCase(key)
       )
