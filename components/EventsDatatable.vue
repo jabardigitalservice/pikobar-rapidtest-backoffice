@@ -246,7 +246,7 @@ export default {
     }
   },
 
-  mounted() {
+  async mounted() {
     const options = { ...this.options }
     options.page = this.$route.query.page
       ? parseInt(this.$route.query.page)
@@ -265,7 +265,7 @@ export default {
       : DEFAULT_FILTER.status
     this.options = options
     this.$emit('optionChanged', options)
-    console.log(this.options)
+    await this.doFilterReset()
   },
 
   methods: {
