@@ -1,50 +1,84 @@
 <template>
   <div>
-    <v-dialog :value="open" max-width="528">
+    <v-dialog :value="open" max-width="60%">
       <validation-observer
         v-slot="{ valid, handleSubmit }"
         ref="observerImport"
         tag="div"
       >
-        <form ref="importForm" @submit.prevent="handleSubmit(doImport)">
-          <v-card class="text-center">
-            <v-card-title>
-              <span class="col">Import Hasil Test</span>
-            </v-card-title>
-            <v-card-text class="pb-0">
-              <div>
-                Untuk Import data hasil test, anda harus memakai format Excel
-                (.xls).
+        <v-card>
+          <v-card-title>
+            <span class="col">Import Data Hasil Test</span>
+            <v-btn icon @click="close">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-card-text class="px-10">
+            <div>
+              <p class="text-subtitle-1 pt-5 font-weight-medium">
+                Untuk melakukan import, wajib menggunakan template excel yang
+                sudah tersedia.
+              </p>
+              <a href="http://google.com" class="body-1"
+                >Unduh template excel di sini</a
+              >
+            </div>
+            <form ref="importForm" @submit.prevent="handleSubmit(doImport)">
+              <div class="py-5">
+                <div class="py-6 mb-4 text-center import-border">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="File"
+                    rules="required"
+                  >
+                    <v-file-input
+                      v-model="importFile"
+                      :error-messages="errors"
+                      accept="xlsx"
+                      label="Tambah file di sini"
+                      name="file"
+                    />
+                  </validation-provider>
+                </div>
+                <div class="text-right">
+                  <v-btn color="primary" :disabled="!valid" type="submit">
+                    Import
+                  </v-btn>
+                </div>
               </div>
-              <pkbr-input
-                v-model="importFile"
-                label="Import Hasil Test"
-                type="file"
-                class="mt-4"
-                name="file"
-                rules="required"
-              />
-            </v-card-text>
-            <v-card-actions class="pb-6 justify-center">
-              <v-btn
-                color="grey darken-1"
-                outlined
-                class="mr-2 px-2"
-                @click="close"
+            </form>
+            <div class="mb-3">
+              <p class="text-uppercase text-subtitle-1 font-weight-black">
+                Panduan Penggunaan
+              </p>
+              <ol
+                class="text-subtitle-1 font-weight-medium import-text-line-height"
               >
-                Batal
-              </v-btn>
-              <v-btn
-                color="primary"
-                :disabled="!valid"
-                class="ml-2 px-2"
-                type="submit"
-              >
-                Upload
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </form>
+                <li>Siapkan data yang akan diimport</li>
+                <ol type="a">
+                  <li>Unduh template excel yang telah disediakan</li>
+                  <li>Isi dan lengkapi data kasus pada template excel</li>
+                  <li>
+                    Setelah selesai melengkapi data, tekan simpan pada excel
+                  </li>
+                </ol>
+                <li>
+                  Masukan file yang akan diimport dengan klik pada bagian
+                  "Tambah File". Kemudian klik tombol "Import"
+                </li>
+                <li>
+                  Import akan gagal jika terdapat ketidaksesuaian format dalam
+                  file
+                </li>
+                <li>
+                  Jika proses import berhasil, data akan tersimpan secara
+                  otomatis pada list kasus
+                </li>
+              </ol>
+            </div>
+          </v-card-text>
+        </v-card>
       </validation-observer>
     </v-dialog>
   </div>
