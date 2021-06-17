@@ -20,9 +20,9 @@
                 Untuk melakukan import, wajib menggunakan template excel yang
                 sudah tersedia.
               </p>
-              <a href="http://google.com" class="body-1"
-                >Unduh template excel di sini</a
-              >
+              <a class="body-1" @click="getTemplateImport">
+                Unduh template excel di sini
+              </a>
             </div>
             <form ref="importForm" @submit.prevent="handleSubmit(doImport)">
               <div class="py-5">
@@ -35,6 +35,8 @@
                     <v-file-input
                       v-model="importFile"
                       :error-messages="errors"
+                      counter
+                      show-size
                       accept="xlsx"
                       label="Tambah file di sini"
                       name="file"
@@ -102,6 +104,35 @@ export default {
     },
     doImport() {
       this.$emit('doImport', this.importFile)
+    },
+    async getTemplateImport() {
+      try {
+        const response = await this.$axios.get('template/import-result-test', {
+          responseType: 'blob'
+        })
+        const fileURL = window.URL.createObjectURL(new Blob([response.data]))
+
+        const fileLink = document.createElement('a')
+
+        fileLink.href = fileURL
+
+        let fileName = 'Template_Import_Hasil_tes.xlsx'
+        const contentDisposition = response.headers['content-disposition']
+        const fileNameMatch = contentDisposition.match(/filename=(.+)/)
+        if (fileNameMatch.length === 2) {
+          fileName = fileNameMatch[1]
+        }
+
+        fileLink.setAttribute('download', fileName)
+
+        document.body.appendChild(fileLink)
+
+        fileLink.click()
+      } catch (error) {
+        this.$toast.show({
+          message: error.response.message
+        })
+      }
     }
   }
 }
