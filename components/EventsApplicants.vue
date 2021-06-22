@@ -14,35 +14,7 @@
           Tambah Peserta Baru
         </v-btn>
       </v-col>
-      <v-col cols="7">
-        <v-btn
-          v-if="allow.includes('notify-participants')"
-          color="primary"
-          outlined
-          @click="openModalNotif('Undangan')"
-        >
-          <v-icon class="mr-1">mdi-email-outline</v-icon>
-          Kirim Undangan
-        </v-btn>
-        <v-btn
-          v-if="allow.includes('notify-participants')"
-          color="primary"
-          outlined
-          @click="openModalNotif('Hasil Test')"
-        >
-          <v-icon class="mr-1">mdi-email-open-outline</v-icon>
-          Kirim Hasil Tes
-        </v-btn>
-        <v-btn
-          v-if="configIntegration === 'true'"
-          color="primary"
-          outlined
-          @click="openModalIntegratingData"
-        >
-          <v-icon class="mr-1">mdi-email-sync-outline</v-icon>
-          Kirim data
-        </v-btn>
-      </v-col>
+      <v-col cols="7"></v-col>
       <v-spacer></v-spacer>
       <v-col cols="auto">
         <v-btn
@@ -147,6 +119,46 @@
               </v-btn>
               <v-btn color="primary" @click="doFilterReset">
                 Reset
+              </v-btn>
+              <v-btn color="primary" @click="doFilterReset">
+                Filter
+                <v-icon v-if="false" class="pl-1">
+                  mdi-chevron-right
+                </v-icon>
+                <v-icon v-else class="pl-1">
+                  mdi-chevron-down
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="7">
+              <v-btn
+                v-if="allow.includes('notify-participants')"
+                color="primary"
+                outlined
+                @click="openModalNotif('Undangan')"
+              >
+                <v-icon class="mr-1">mdi-email-outline</v-icon>
+                Kirim Undangan
+              </v-btn>
+              <v-btn
+                v-if="allow.includes('notify-participants')"
+                color="primary"
+                outlined
+                @click="openModalNotif('Hasil Test')"
+              >
+                <v-icon class="mr-1">mdi-email-open-outline</v-icon>
+                Kirim Hasil Tes
+              </v-btn>
+              <v-btn
+                v-if="configIntegration === 'true'"
+                color="primary"
+                outlined
+                @click="openModalIntegratingData"
+              >
+                <v-icon class="mr-1">mdi-email-sync-outline</v-icon>
+                Kirim data
               </v-btn>
             </v-col>
           </v-row>
