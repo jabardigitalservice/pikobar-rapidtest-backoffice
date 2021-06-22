@@ -2,7 +2,7 @@
   <div style="width: 100%;">
     <v-row>
       <v-col cols="6" class="d-flex align-center pb-0">
-        <h3>Daftar Peserta</h3>
+        <h3 class="text-subtitle-1 font-weight-bold">Daftar Peserta</h3>
       </v-col>
       <v-col
         v-if="allow.includes('manage-events')"
@@ -10,8 +10,8 @@
         class="d-flex align-center justify-end pb-0"
       >
         <v-btn color="primary" :to="`/events/${$route.params.eventId}/add`">
-          <v-icon class="mr-1">mdi-plus-circle</v-icon>
-          Tambah Peserta
+          <v-icon class="mr-1">mdi-plus</v-icon>
+          Tambah Peserta Baru
         </v-btn>
       </v-col>
       <v-col cols="7">
@@ -21,7 +21,7 @@
           outlined
           @click="openModalNotif('Undangan')"
         >
-          <v-icon class="mr-1">mdi-email-send</v-icon>
+          <v-icon class="mr-1">mdi-email-outline</v-icon>
           Kirim Undangan
         </v-btn>
         <v-btn
@@ -30,8 +30,8 @@
           outlined
           @click="openModalNotif('Hasil Test')"
         >
-          <v-icon class="mr-1">mdi-email-send-outline</v-icon>
-          Kirim Hasil Test
+          <v-icon class="mr-1">mdi-email-open-outline</v-icon>
+          Kirim Hasil Tes
         </v-btn>
         <v-btn
           v-if="configIntegration === 'true'"
@@ -51,8 +51,8 @@
           outlined
           @click="openModalImportHasil"
         >
-          <v-icon class="mr-1">mdi-download</v-icon>
-          Import Hasil Test
+          <v-icon class="mr-1">mdi-download-outline</v-icon>
+          Impor
         </v-btn>
         <v-menu bottom offset-y>
           <template v-slot:activator="{ on, attrs }">
@@ -63,8 +63,8 @@
               color="primary"
               v-on="on"
             >
-              <v-icon class="ml-1">mdi-upload</v-icon>
-              Export
+              <v-icon class="ml-1">mdi-upload-outline</v-icon>
+              Expor
               <v-icon class="ml-1">mdi-menu-down</v-icon>
             </v-btn>
           </template>
@@ -106,48 +106,50 @@
       }"
     >
       <template slot="top">
-        <div class="d-flex flex-wrap">
-          <v-col lg="5" md="12" sm="12">
-            <v-text-field
-              v-model="listQuery.searchKey"
-              label="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
-              placeholder="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
-              clearable
-              outlined
-              dense
-              hide-details
-            />
-          </v-col>
-          <v-col lg="2" md="12" sm="12">
-            <ValidationObserver ref="startDate">
-              <pkbr-input-date
-                v-model="listQuery.startDate"
-                label="Tanggal Mulai"
-                name="Tanggal Mulai"
-                placeholder="Tanggal Mulai"
-                :rules="ruleValidationStartDate"
+        <div class="pl-4">
+          <v-row class="pt-3">
+            <v-col lg="5" md="12" sm="12">
+              <v-text-field
+                v-model="listQuery.searchKey"
+                label="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
+                placeholder="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
+                clearable
+                outlined
+                dense
+                hide-details
               />
-            </ValidationObserver>
-          </v-col>
-          <v-col lg="2" md="12" sm="12">
-            <ValidationObserver ref="endDate">
-              <pkbr-input-date
-                v-model="listQuery.endDate"
-                label="Tanggal Berakhir"
-                name="Tanggal Berakhir"
-                placeholder="Tanggal Berakhir"
-                :rules="ruleValidationEndDate"
-              />
-            </ValidationObserver>
-          </v-col>
-          <v-col lg="3" md="12" sm="12">
-            <v-btn color="primary" @click="searchFilter">
-              Cari
-            </v-btn>
-            <v-btn color="primary" @click="doFilterReset">
-              Reset
-            </v-btn>
-          </v-col>
+            </v-col>
+            <v-col lg="2" md="12" sm="12">
+              <ValidationObserver ref="startDate">
+                <pkbr-input-date
+                  v-model="listQuery.startDate"
+                  label="Tanggal Mulai"
+                  name="Tanggal Mulai"
+                  placeholder="Tanggal Mulai"
+                  :rules="ruleValidationStartDate"
+                />
+              </ValidationObserver>
+            </v-col>
+            <v-col lg="2" md="12" sm="12">
+              <ValidationObserver ref="endDate">
+                <pkbr-input-date
+                  v-model="listQuery.endDate"
+                  label="Tanggal Berakhir"
+                  name="Tanggal Berakhir"
+                  placeholder="Tanggal Berakhir"
+                  :rules="ruleValidationEndDate"
+                />
+              </ValidationObserver>
+            </v-col>
+            <v-col lg="3" md="12" sm="12">
+              <v-btn color="primary" @click="searchFilter">
+                Cari
+              </v-btn>
+              <v-btn color="primary" @click="doFilterReset">
+                Reset
+              </v-btn>
+            </v-col>
+          </v-row>
         </div>
       </template>
       <template v-slot:[`item.notified_at`]="{ value }">
@@ -312,63 +314,66 @@
       <template v-slot:[`item.actions`]="{ item }">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              v-if="item.lab_code_sample === null"
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="uncheckWarning(item)"
-            >
-              mdi-checkbox-blank-outline
-            </v-icon>
-            <v-icon
-              v-else-if="item.lab_code_sample !== null"
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="uncheck(item)"
-            >
-              mdi-check-box-outline
-            </v-icon>
+            <v-btn color="success" x-small dark class="py-4">
+              <v-icon
+                v-if="item.lab_code_sample === null"
+                v-bind="attrs"
+                small
+                v-on="on"
+                @click="uncheckWarning(item)"
+              >
+                mdi-checkbox-blank-outline
+              </v-icon>
+              <v-icon
+                v-else-if="item.lab_code_sample !== null"
+                v-bind="attrs"
+                small
+                v-on="on"
+                @click="uncheck(item)"
+              >
+                mdi-check-box-outline
+              </v-icon>
+            </v-btn>
           </template>
           <span>Uncheck</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="viewItem(item)"
-            >
-              mdi-card-search
-            </v-icon>
+            <v-btn color="primary" x-small dark class="py-4">
+              <v-icon small v-bind="attrs" v-on="on" @click="viewItem(item)">
+                mdi-eye-outline
+              </v-icon>
+            </v-btn>
           </template>
           <span>Detail</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="editApplicantOpen(item)"
-            >
-              mdi-pencil
-            </v-icon>
+            <v-btn color="warning" x-small dark class="py-4">
+              <v-icon
+                small
+                v-bind="attrs"
+                v-on="on"
+                @click="editApplicantOpen(item)"
+              >
+                mdi-pencil-outline
+              </v-icon>
+            </v-btn>
           </template>
           <span>Edit Data Peserta</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="selectToRemove(item)"
-            >
-              mdi-delete
-            </v-icon>
+            <v-btn color="error" x-small dark class="py-4">
+              <v-icon
+                small
+                v-bind="attrs"
+                v-on="on"
+                @click="selectToRemove(item)"
+              >
+                mdi-trash-can-outline
+              </v-icon>
+            </v-btn>
           </template>
           <span>Hapus</span>
         </v-tooltip>

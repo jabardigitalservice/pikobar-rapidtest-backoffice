@@ -45,7 +45,7 @@
                 </div>
                 <div class="text-right">
                   <v-btn color="primary" :disabled="!valid" type="submit">
-                    Import
+                    Impor
                   </v-btn>
                 </div>
               </div>

@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" :mini-variant="miniVariant" fixed app>
       <v-list nav>
         <v-list-item id="main-logo" :class="miniVariant && 'logo__small'">
-          <v-img src="/pikobar-logo.png" />
+          <v-img src="/pikobar-logo.png" max-width="180" class="ml-4" />
         </v-list-item>
         <v-list-item two-line :class="miniVariant && 'px-0'">
           <v-list-item-avatar>
@@ -55,7 +55,9 @@
       <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title class="text-subtitle-1 font-weight-medium">
+        {{ title }}
+      </v-toolbar-title>
     </v-app-bar>
     <v-main class="blue-grey lighten-5">
       <v-container>
@@ -65,8 +67,14 @@
           large
         >
           <template v-slot:item="{ item }">
-            <span v-if="item.disabled" class="text-h6">{{ item.text }}</span>
-            <nuxt-link v-else class="text-h6 v-breadcrumbs__item" :to="item.to">
+            <span v-if="item.disabled" class="text-subtitle-1 font-weight-bold">
+              {{ item.text }}
+            </span>
+            <nuxt-link
+              v-else
+              class="text-subtitle-1 font-weight-bold v-breadcrumbs__item"
+              :to="item.to"
+            >
               {{ item.text }}
             </nuxt-link>
           </template>
