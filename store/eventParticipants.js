@@ -194,12 +194,13 @@ export const actions = {
   async importTestResult({ commit }, { idEvent, formData }) {
     commit('SET_LOADING_IMPORT', true)
     try {
-      await this.$axios.$post(
+      const response = await this.$axios.$post(
         `/rdt/events/${idEvent}/participants-import-results`,
         formData
       )
+      return response
     } catch (e) {
-      throw new Error(e.response.data.message)
+      throw e.response
     } finally {
       commit('SET_LOADING_IMPORT', false)
     }
