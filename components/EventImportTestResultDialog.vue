@@ -62,7 +62,6 @@
                 <v-tab-item>
                   <v-card flat>
                     <v-card-text>
-                      {{ guideImport }}
                       <ol
                         class="text-subtitle-1 font-weight-medium import-text-line-height"
                       >
@@ -139,7 +138,6 @@
 </template>
 <script>
 import { FAILED_IMPORT } from '@/utilities/constant'
-import guide from '@/utilities/guide'
 export default {
   props: {
     open: {
@@ -158,11 +156,6 @@ export default {
       loading: false,
       successMessage: null,
       errorMessage: []
-    }
-  },
-  computed: {
-    guideImport() {
-      return guide
     }
   },
   methods: {
