@@ -1,62 +1,18 @@
 <template>
   <div style="width: 100%;">
     <v-row>
-      <v-col cols="6" class="d-flex align-center pb-0">
+      <v-col cols="6" class="d-flex align-center">
         <h3 class="text-subtitle-1 font-weight-bold">Daftar Peserta</h3>
       </v-col>
       <v-col
         v-if="allow.includes('manage-events')"
         cols="6"
-        class="d-flex align-center justify-end pb-0"
+        class="d-flex align-center justify-end"
       >
         <v-btn color="primary" :to="`/events/${$route.params.eventId}/add`">
           <v-icon class="mr-1">mdi-plus</v-icon>
           Tambah Peserta Baru
         </v-btn>
-      </v-col>
-      <v-col cols="7"></v-col>
-      <v-spacer></v-spacer>
-      <v-col cols="auto">
-        <v-btn
-          v-if="allow.includes('manage-events')"
-          color="primary"
-          outlined
-          @click="openModalImportHasil"
-        >
-          <v-icon class="mr-1">mdi-download-outline</v-icon>
-          Impor
-        </v-btn>
-        <v-menu bottom offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="pr-1"
-              v-bind="attrs"
-              outlined
-              color="primary"
-              v-on="on"
-            >
-              <v-icon class="ml-1">mdi-upload-outline</v-icon>
-              Expor
-              <v-icon class="ml-1">mdi-menu-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, i) in [
-                { icon: 'table', format: 'xls', text: 'Excel F1' },
-                { icon: 'table', format: 'xls', text: 'Excel F2' },
-                { icon: 'table', format: 'xls', text: 'Excel Raw' }
-              ]"
-              :key="i"
-              @click="downloadExport(item)"
-            >
-              <v-list-item-title>
-                <v-icon class="mr-1">mdi-{{ item.icon }}</v-icon>
-                {{ item.text }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
       </v-col>
     </v-row>
     <v-data-table
@@ -83,14 +39,69 @@
             <v-col lg="5" md="12" sm="12">
               <v-text-field
                 v-model="listQuery.searchKey"
-                label="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
-                placeholder="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
+                label="Nama Peserta | No. Pendaftaran | Kode Sampel | Instansi Tempat Kerja"
+                placeholder="Cari Peserta"
+                prepend-inner-icon="mdi-magnify"
                 clearable
                 outlined
                 dense
                 hide-details
               />
             </v-col>
+            <v-spacer></v-spacer>
+            <v-col lg="4" md="12" sm="12">
+              <v-btn
+                v-if="allow.includes('manage-events')"
+                color="primary"
+                outlined
+                @click="openModalImportHasil"
+              >
+                <v-icon class="mr-1">mdi-download-outline</v-icon>
+                Impor
+              </v-btn>
+              <v-menu bottom offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    class="pr-1"
+                    v-bind="attrs"
+                    outlined
+                    color="primary"
+                    v-on="on"
+                  >
+                    <v-icon class="ml-1">mdi-upload-outline</v-icon>
+                    Expor
+                    <v-icon class="ml-1">mdi-menu-down</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    v-for="(item, i) in [
+                      { icon: 'table', format: 'xls', text: 'Excel F1' },
+                      { icon: 'table', format: 'xls', text: 'Excel F2' },
+                      { icon: 'table', format: 'xls', text: 'Excel Raw' }
+                    ]"
+                    :key="i"
+                    @click="downloadExport(item)"
+                  >
+                    <v-list-item-title>
+                      <v-icon class="mr-1">mdi-{{ item.icon }}</v-icon>
+                      {{ item.text }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+              <v-btn color="primary" @click="showAdvanceFilter">
+                Filter
+                <v-icon v-if="advanceFilter" class="pl-1">
+                  mdi-chevron-down
+                </v-icon>
+                <v-icon v-else class="pl-1">
+                  mdi-chevron-right
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row v-if="advanceFilter" class="mb-n6">
             <v-col lg="2" md="12" sm="12">
               <ValidationObserver ref="startDate">
                 <pkbr-input-date
@@ -113,25 +124,17 @@
                 />
               </ValidationObserver>
             </v-col>
-            <v-col lg="3" md="12" sm="12">
+            <v-spacer></v-spacer>
+            <v-col lg="2" md="12" sm="12">
               <v-btn color="primary" @click="searchFilter">
                 Cari
               </v-btn>
               <v-btn color="primary" @click="doFilterReset">
                 Reset
               </v-btn>
-              <v-btn color="primary" @click="doFilterReset">
-                Filter
-                <v-icon v-if="false" class="pl-1">
-                  mdi-chevron-right
-                </v-icon>
-                <v-icon v-else class="pl-1">
-                  mdi-chevron-down
-                </v-icon>
-              </v-btn>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row class="mb-2">
             <v-col cols="7">
               <v-btn
                 v-if="allow.includes('notify-participants')"
@@ -600,6 +603,7 @@ export default {
       incompleteResultTest: [],
       editApplicant: false,
       idApplicant: null,
+      advanceFilter: false,
       ruleValidationStartDate: '',
       ruleValidationEndDate: '',
       listQuery: {
@@ -693,6 +697,13 @@ export default {
         endDate: null
       }
       this.$emit('optionChanged', this.options)
+    },
+    showAdvanceFilter() {
+      if (this.advanceFilter) {
+        this.advanceFilter = false
+      } else {
+        this.advanceFilter = true
+      }
     },
     async resetDataCheckin(payload) {
       try {
