@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-dialog :value="open" max-width="60%">
+    <v-dialog :value="open" persistent max-width="60%">
       <validation-observer
         v-slot="{ valid, handleSubmit }"
         ref="observerImport"
@@ -102,6 +102,7 @@ export default {
   },
   methods: {
     close() {
+      this.importFile = null
       this.$emit('close')
     },
     doImport() {
