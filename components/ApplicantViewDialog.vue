@@ -237,12 +237,12 @@
                         v-for="invitation in invitations"
                         :key="invitation.id"
                       >
-                        <td scope="row">
+                        <td>
                           {{
                             invitation.event ? invitation.event.event_name : '-'
                           }}
                         </td>
-                        <td scope="row">
+                        <td>
                           {{
                             invitation.event
                               ? $dateFns.format(
@@ -252,7 +252,7 @@
                               : '-'
                           }}
                         </td>
-                        <td scope="row">
+                        <td>
                           {{
                             invitation.attended_at
                               ? $dateFns.format(
@@ -262,12 +262,12 @@
                               : '-'
                           }}
                         </td>
-                        <td scope="row">
+                        <td>
                           {{
                             invitation.test_type ? invitation.test_type : '-'
                           }}
                         </td>
-                        <td scope="row">
+                        <td>
                           {{
                             invitation.result_at
                               ? $dateFns.format(
@@ -277,7 +277,7 @@
                               : '-'
                           }}
                         </td>
-                        <td scope="row">
+                        <td>
                           {{
                             invitation.lab_result_type
                               ? invitation.lab_result_type

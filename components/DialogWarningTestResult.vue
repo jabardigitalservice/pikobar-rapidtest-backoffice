@@ -27,10 +27,10 @@
               </thead>
               <tbody>
                 <tr v-for="data in items" :key="data.id">
-                  <td scope="row">
+                  <td>
                     {{ data.applicant.registration_code }}
                   </td>
-                  <td scope="row">{{ data.applicant.name }}</td>
+                  <td>{{ data.applicant.name }}</td>
                 </tr>
               </tbody>
             </template>
