@@ -106,8 +106,11 @@
       </template>
       <template v-slot:[`item.status`]="{ value }">
         <v-chip small class="ma-0" :color="value | getChipColor">
-          {{ value }}
+          {{ toCapitalizeCase(value) }}
         </v-chip>
+      </template>
+      <template v-slot:[`item.city.name`]="{ item }">
+        {{ toCapitalizeCase(item.city.name) }}
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-tooltip bottom>
@@ -189,7 +192,7 @@ import {
   DEFAULT_PAGINATION
 } from '@/utilities/constant'
 import { ValidationObserver } from 'vee-validate'
-import { getChipColor } from '@/utilities/formater'
+import { getChipColor, toCapitalizeCase } from '@/utilities/formater'
 import EventDeleteDialog from '@/components/EventDeleteDialog'
 
 const headers = [
@@ -312,6 +315,7 @@ export default {
   },
 
   methods: {
+    toCapitalizeCase,
     async searchFilter() {
       const validStartDate = await this.$refs.startDate.validate()
       const validEndDate = await this.$refs.endDate.validate()

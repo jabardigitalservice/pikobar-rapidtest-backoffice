@@ -25,7 +25,7 @@
       :options.sync="options"
       fixed-header
       show-select
-      item-key="rdt_applicant_id"
+      item-key="id"
       :header-props="{
         class: 'blue-grey lighten-3'
       }"
@@ -38,7 +38,7 @@
           <v-row class="pt-3">
             <v-col lg="5" md="12" sm="12">
               <v-text-field
-                v-model="listQuery.searchKey"
+                v-model="searchKey"
                 label="Nama Peserta | No. Pendaftaran | Kode Sampel | Instansi Tempat Kerja"
                 placeholder="Cari Peserta"
                 prepend-inner-icon="mdi-magnify"
@@ -50,47 +50,61 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col lg="4" md="12" sm="12">
-              <v-btn
-                v-if="allow.includes('manage-events')"
-                color="primary"
-                outlined
-                @click="openModalImportHasil"
-              >
-                <v-icon class="mr-1">mdi-download-outline</v-icon>
-                Impor
-              </v-btn>
-              <v-menu bottom offset-y>
+              <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    class="pr-1"
+                    v-if="allow.includes('manage-events')"
+                    color="primary"
                     v-bind="attrs"
                     outlined
-                    color="primary"
                     v-on="on"
+                    @click="openModalImportHasil"
                   >
-                    <v-icon class="ml-1">mdi-upload-outline</v-icon>
-                    Expor
-                    <v-icon class="ml-1">mdi-menu-down</v-icon>
+                    <v-icon class="mr-1">mdi-download-outline</v-icon>
+                    Impor
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item
-                    v-for="(item, i) in [
-                      { icon: 'table', format: 'xls', text: 'Excel F1' },
-                      { icon: 'table', format: 'xls', text: 'Excel F2' },
-                      { icon: 'table', format: 'xls', text: 'Excel Raw' }
-                    ]"
-                    :key="i"
-                    @click="downloadExport(item)"
-                  >
-                    <v-list-item-title>
-                      <v-icon class="mr-1">mdi-{{ item.icon }}</v-icon>
-                      {{ item.text }}
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-              <v-btn color="primary" @click="showAdvanceFilter">
+                <span>Impor hasil tes</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on1, attrs1 }">
+                  <v-menu bottom offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        class="pr-1"
+                        v-bind="attrs"
+                        outlined
+                        color="primary"
+                        v-on="on"
+                      >
+                        <v-icon v-bind="attrs1" class="ml-1" v-on="on1"
+                          >mdi-upload-outline</v-icon
+                        >
+                        Expor
+                        <v-icon class="ml-1">mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item
+                        v-for="(item, i) in [
+                          { icon: 'table', format: 'xls', text: 'Excel F1' },
+                          { icon: 'table', format: 'xls', text: 'Excel F2' },
+                          { icon: 'table', format: 'xls', text: 'Excel Raw' }
+                        ]"
+                        :key="i"
+                        @click="downloadExport(item)"
+                      >
+                        <v-list-item-title>
+                          <v-icon class="mr-1">mdi-{{ item.icon }}</v-icon>
+                          {{ item.text }}
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </template>
+                <span>Expor data peserta</span>
+              </v-tooltip>
+              <v-btn color="primary" @click="advanceFilter = !advanceFilter">
                 Filter
                 <v-icon v-if="advanceFilter" class="pl-1">
                   mdi-chevron-down
@@ -129,7 +143,11 @@
               <v-btn color="primary" @click="searchFilter">
                 Cari
               </v-btn>
-              <v-btn color="primary" @click="doFilterReset">
+              <v-btn
+                color="grey darken-2"
+                class="white--text"
+                @click="doFilterReset"
+              >
                 Reset
               </v-btn>
             </v-col>
@@ -270,10 +288,10 @@
           <span>Edit Kode Sample</span>
         </v-tooltip>
       </template>
-      <template v-slot:[`item.applicant.status`]="{ value }">
-        <v-chip small class="ma-2" :color="value | getChipColor">
-          {{ value }}
-        </v-chip>
+      <template v-slot:[`item.applicant.workplace_name`]="{ value }">
+        <v-layout>
+          {{ toCapitalizeCase(value) }}
+        </v-layout>
       </template>
       <template v-slot:[`item.applicant.name`]="{ item }" class="flex wrap">
         <div v-if="item.status_on_simlab === 'FAILED'" class="ml-n2">
@@ -287,14 +305,14 @@
                 style="width: 200px;"
                 v-on="on"
               >
-                {{ item.applicant.name }}
+                {{ toCapitalizeCase(item.applicant.name) }}
               </v-chip>
             </template>
             Data gagal dikirim ke Aplikasi SIM Lab
           </v-tooltip>
         </div>
         <div v-else>
-          {{ item.applicant.name }}
+          {{ toCapitalizeCase(item.applicant.name) }}
         </div>
       </template>
       <template v-slot:[`item.applicant.birth_date`]="{ item }">
@@ -470,7 +488,7 @@
 <script>
 import { isEqual } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { getChipColor } from '@/utilities/formater'
+import { toCapitalizeCase } from '@/utilities/formater'
 import {
   EVENT_BLAST_SUCCESS,
   SUCCESS_IMPORT,
@@ -562,10 +580,6 @@ export default {
     ApplicantEditDialog,
     ValidationObserver
   },
-  filters: {
-    getChipColor
-  },
-
   props: {
     idEvent: {
       type: [Number, String],
@@ -635,6 +649,18 @@ export default {
         return this.$store.getters['eventParticipants/getTableOption']
       }
     },
+    searchKey: {
+      async set(value) {
+        await this.$store.dispatch('eventParticipants/resetOptions')
+        this.options = {
+          ...this.options,
+          keyWords: value
+        }
+      },
+      get() {
+        return this.$route.query.keyWords
+      }
+    },
     totalItems() {
       return this.$store.getters['eventParticipants/getTotalData']
     }
@@ -674,6 +700,7 @@ export default {
   },
 
   methods: {
+    toCapitalizeCase,
     async searchFilter() {
       const validStartDate = await this.$refs.startDate.validate()
       const validEndDate = await this.$refs.endDate.validate()
@@ -697,13 +724,6 @@ export default {
         endDate: null
       }
       this.$emit('optionChanged', this.options)
-    },
-    showAdvanceFilter() {
-      if (this.advanceFilter) {
-        this.advanceFilter = false
-      } else {
-        this.advanceFilter = true
-      }
     },
     async resetDataCheckin(payload) {
       try {

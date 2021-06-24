@@ -28,7 +28,7 @@
                     class="ma-0"
                     :color="status | getChipColor"
                   >
-                    {{ status }}
+                    {{ toCapitalizeCase(status) }}
                   </v-chip>
                 </p>
               </v-col>
@@ -111,7 +111,7 @@
 
 <script>
 /* eslint-disable camelcase */
-import { getChipColor } from '@/utilities/formater'
+import { getChipColor, toCapitalizeCase } from '@/utilities/formater'
 
 export default {
   filters: {
@@ -181,6 +181,9 @@ export default {
         end_at: this.$dateFns.format(new Date(sch.end_at), 'HH:mm')
       }))
     }
+  },
+  methods: {
+    toCapitalizeCase
   }
 }
 </script>

@@ -124,6 +124,15 @@
           </template>
         </v-layout>
       </template>
+      <template v-slot:[`item.name`]="{ item }">
+        {{ toCapitalizeCase(item.name) }}
+      </template>
+      <template v-slot:[`item.workplace_name`]="{ item }">
+        {{ toCapitalizeCase(item.workplace_name) }}
+      </template>
+      <template v-slot:[`item.city.name`]="{ item }">
+        {{ toCapitalizeCase(item.city.name) }}
+      </template>
       <template v-slot:[`item.symptoms_interaction`]="{ item }">
         <v-layout justify-center>
           <template v-if="item.symptoms_interaction === '0'">
@@ -257,6 +266,7 @@ import { isEqual } from 'lodash'
 import { mapGetters } from 'vuex'
 import { ValidationObserver } from 'vee-validate'
 import { getPersonStatusText } from '@/utilities/personStatus'
+import { toCapitalizeCase } from '@/utilities/formater'
 import ApplicantCreateDialog from '@/components/ApplicantCreateDialog'
 import ApplicantEditDialog from '@/components/ApplicantEditDialog'
 import ApplicantViewDialog from '@/components/ApplicantViewDialog'
@@ -451,6 +461,7 @@ export default {
   },
 
   methods: {
+    toCapitalizeCase,
     getPersonStatusText,
     async searchFilter() {
       const validStartDate = await this.$refs.startDate.validate()
