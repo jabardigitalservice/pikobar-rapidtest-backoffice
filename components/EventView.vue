@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%;">
-    <h3 class="mb-1">{{ event_name }}</h3>
+    <h3 class="mb-3 text-subtitle-1 font-weight-bold">{{ event_name }}</h3>
     <v-card class="rounded-b-0">
       <v-card-text>
         <v-row no-gutters>
@@ -28,7 +28,7 @@
                     class="ma-0"
                     :color="status | getChipColor"
                   >
-                    {{ status }}
+                    {{ toCapitalizeCase(status) }}
                   </v-chip>
                 </p>
               </v-col>
@@ -99,6 +99,9 @@
           class="white--text"
           :to="`/events/${$route.params.eventId}/edit`"
         >
+          <v-icon small class="pr-2">
+            mdi-pencil-outline
+          </v-icon>
           Ubah
         </v-btn>
       </v-card-actions>
@@ -108,7 +111,7 @@
 
 <script>
 /* eslint-disable camelcase */
-import { getChipColor } from '@/utilities/formater'
+import { getChipColor, toCapitalizeCase } from '@/utilities/formater'
 
 export default {
   filters: {
@@ -178,6 +181,9 @@ export default {
         end_at: this.$dateFns.format(new Date(sch.end_at), 'HH:mm')
       }))
     }
+  },
+  methods: {
+    toCapitalizeCase
   }
 }
 </script>

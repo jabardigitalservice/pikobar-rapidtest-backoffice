@@ -1,90 +1,18 @@
 <template>
   <div style="width: 100%;">
     <v-row>
-      <v-col cols="6" class="d-flex align-center pb-0">
-        <h3>Daftar Peserta</h3>
+      <v-col cols="6" class="d-flex align-center">
+        <h3 class="text-subtitle-1 font-weight-bold">Daftar Peserta</h3>
       </v-col>
       <v-col
         v-if="allow.includes('manage-events')"
         cols="6"
-        class="d-flex align-center justify-end pb-0"
+        class="d-flex align-center justify-end"
       >
         <v-btn color="primary" :to="`/events/${$route.params.eventId}/add`">
-          <v-icon class="mr-1">mdi-plus-circle</v-icon>
-          Tambah Peserta
+          <v-icon class="mr-1">mdi-plus</v-icon>
+          Tambah Peserta Baru
         </v-btn>
-      </v-col>
-      <v-col cols="7">
-        <v-btn
-          v-if="allow.includes('notify-participants')"
-          color="primary"
-          outlined
-          @click="openModalNotif('Undangan')"
-        >
-          <v-icon class="mr-1">mdi-email-send</v-icon>
-          Kirim Undangan
-        </v-btn>
-        <v-btn
-          v-if="allow.includes('notify-participants')"
-          color="primary"
-          outlined
-          @click="openModalNotif('Hasil Test')"
-        >
-          <v-icon class="mr-1">mdi-email-send-outline</v-icon>
-          Kirim Hasil Tes
-        </v-btn>
-        <v-btn
-          v-if="configIntegration === 'true'"
-          color="primary"
-          outlined
-          @click="openModalIntegratingData"
-        >
-          <v-icon class="mr-1">mdi-email-sync-outline</v-icon>
-          Kirim data
-        </v-btn>
-      </v-col>
-      <v-spacer></v-spacer>
-      <v-col cols="auto">
-        <v-btn
-          v-if="allow.includes('manage-events')"
-          color="primary"
-          outlined
-          @click="openModalImportHasil"
-        >
-          <v-icon class="mr-1">mdi-download</v-icon>
-          Impor Hasil Tes
-        </v-btn>
-        <v-menu bottom offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              class="pr-1"
-              v-bind="attrs"
-              outlined
-              color="primary"
-              v-on="on"
-            >
-              <v-icon class="ml-1">mdi-upload</v-icon>
-              Expor
-              <v-icon class="ml-1">mdi-menu-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, i) in [
-                { icon: 'table', format: 'xls', text: 'Excel F1' },
-                { icon: 'table', format: 'xls', text: 'Excel F2' },
-                { icon: 'table', format: 'xls', text: 'Excel Raw' }
-              ]"
-              :key="i"
-              @click="downloadExport(item)"
-            >
-              <v-list-item-title>
-                <v-icon class="mr-1">mdi-{{ item.icon }}</v-icon>
-                {{ item.text }}
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
       </v-col>
     </v-row>
     <v-data-table
@@ -97,7 +25,7 @@
       :options.sync="options"
       fixed-header
       show-select
-      item-key="rdt_applicant_id"
+      item-key="id"
       :header-props="{
         class: 'blue-grey lighten-3'
       }"
@@ -106,48 +34,155 @@
       }"
     >
       <template slot="top">
-        <div class="d-flex flex-wrap">
-          <v-col lg="5" md="12" sm="12">
-            <v-text-field
-              v-model="listQuery.searchKey"
-              label="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
-              placeholder="Nama Peserta / No. Pendaftaran / Kode Sampel / Instansi Tempat Kerja"
-              clearable
-              outlined
-              dense
-              hide-details
-            />
-          </v-col>
-          <v-col lg="2" md="12" sm="12">
-            <ValidationObserver ref="startDate">
-              <pkbr-input-date
-                v-model="listQuery.startDate"
-                label="Tanggal Mulai"
-                name="Tanggal Mulai"
-                placeholder="Tanggal Mulai"
-                :rules="ruleValidationStartDate"
+        <div class="pl-4">
+          <v-row class="pt-3">
+            <v-col lg="5" md="12" sm="12">
+              <v-text-field
+                v-model="searchKey"
+                label="Nama Peserta | No. Pendaftaran | Kode Sampel | Instansi Tempat Kerja"
+                placeholder="Cari Peserta"
+                prepend-inner-icon="mdi-magnify"
+                clearable
+                outlined
+                dense
+                hide-details
               />
-            </ValidationObserver>
-          </v-col>
-          <v-col lg="2" md="12" sm="12">
-            <ValidationObserver ref="endDate">
-              <pkbr-input-date
-                v-model="listQuery.endDate"
-                label="Tanggal Berakhir"
-                name="Tanggal Berakhir"
-                placeholder="Tanggal Berakhir"
-                :rules="ruleValidationEndDate"
-              />
-            </ValidationObserver>
-          </v-col>
-          <v-col lg="3" md="12" sm="12">
-            <v-btn color="primary" @click="searchFilter">
-              Cari
-            </v-btn>
-            <v-btn color="primary" @click="doFilterReset">
-              Reset
-            </v-btn>
-          </v-col>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col lg="4" md="12" sm="12">
+              <v-tooltip top>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    v-if="allow.includes('manage-events')"
+                    color="primary"
+                    v-bind="attrs"
+                    outlined
+                    v-on="on"
+                    @click="openModalImportHasil"
+                  >
+                    <v-icon class="mr-1">mdi-download-outline</v-icon>
+                    Impor
+                  </v-btn>
+                </template>
+                <span>Impor hasil tes</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on1, attrs1 }">
+                  <v-menu bottom offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        class="pr-1"
+                        v-bind="attrs"
+                        outlined
+                        color="primary"
+                        v-on="on"
+                      >
+                        <v-icon v-bind="attrs1" class="ml-1" v-on="on1"
+                          >mdi-upload-outline</v-icon
+                        >
+                        Expor
+                        <v-icon class="ml-1">mdi-menu-down</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item
+                        v-for="(item, i) in [
+                          { icon: 'table', format: 'xls', text: 'Excel F1' },
+                          { icon: 'table', format: 'xls', text: 'Excel F2' },
+                          { icon: 'table', format: 'xls', text: 'Excel Raw' }
+                        ]"
+                        :key="i"
+                        @click="downloadExport(item)"
+                      >
+                        <v-list-item-title>
+                          <v-icon class="mr-1">mdi-{{ item.icon }}</v-icon>
+                          {{ item.text }}
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </template>
+                <span>Expor data peserta</span>
+              </v-tooltip>
+              <v-btn color="primary" @click="advanceFilter = !advanceFilter">
+                Filter
+                <v-icon v-if="advanceFilter" class="pl-1">
+                  mdi-chevron-down
+                </v-icon>
+                <v-icon v-else class="pl-1">
+                  mdi-chevron-right
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row v-if="advanceFilter" class="mb-n6">
+            <v-col lg="2" md="12" sm="12">
+              <ValidationObserver ref="startDate">
+                <pkbr-input-date
+                  v-model="listQuery.startDate"
+                  label="Tanggal Mulai"
+                  name="Tanggal Mulai"
+                  placeholder="Tanggal Mulai"
+                  :rules="ruleValidationStartDate"
+                />
+              </ValidationObserver>
+            </v-col>
+            <v-col lg="2" md="12" sm="12">
+              <ValidationObserver ref="endDate">
+                <pkbr-input-date
+                  v-model="listQuery.endDate"
+                  label="Tanggal Berakhir"
+                  name="Tanggal Berakhir"
+                  placeholder="Tanggal Berakhir"
+                  :rules="ruleValidationEndDate"
+                />
+              </ValidationObserver>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col lg="2" md="12" sm="12">
+              <v-btn color="primary" @click="searchFilter">
+                Cari
+              </v-btn>
+              <v-btn
+                color="grey darken-2"
+                class="white--text"
+                @click="doFilterReset"
+              >
+                Reset
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row class="mb-2">
+            <v-col cols="7">
+              <v-btn
+                v-if="allow.includes('notify-participants')"
+                color="primary"
+                outlined
+                @click="openModalNotif('Undangan')"
+              >
+                <v-icon class="mr-1">mdi-email-outline</v-icon>
+                Kirim Undangan
+              </v-btn>
+              <v-btn
+                v-if="allow.includes('notify-participants')"
+                color="primary"
+                outlined
+                @click="openModalNotif('Hasil Test')"
+              >
+                <v-icon class="mr-1">mdi-email-open-outline</v-icon>
+                Kirim Hasil Tes
+              </v-btn>
+              <v-btn
+                v-if="configIntegration === 'true'"
+                color="primary"
+                outlined
+                @click="openModalIntegratingData"
+              >
+                <v-icon class="mr-1">mdi-email-sync-outline</v-icon>
+                Kirim data
+              </v-btn>
+            </v-col>
+          </v-row>
         </div>
       </template>
       <template v-slot:[`item.notified_at`]="{ value }">
@@ -253,10 +288,10 @@
           <span>Edit Kode Sample</span>
         </v-tooltip>
       </template>
-      <template v-slot:[`item.applicant.status`]="{ value }">
-        <v-chip small class="ma-2" :color="value | getChipColor">
-          {{ value }}
-        </v-chip>
+      <template v-slot:[`item.applicant.workplace_name`]="{ value }">
+        <v-layout>
+          {{ toCapitalizeCase(value) }}
+        </v-layout>
       </template>
       <template v-slot:[`item.applicant.name`]="{ item }" class="flex wrap">
         <div v-if="item.status_on_simlab === 'FAILED'" class="ml-n2">
@@ -270,14 +305,14 @@
                 style="width: 200px;"
                 v-on="on"
               >
-                {{ item.applicant.name }}
+                {{ toCapitalizeCase(item.applicant.name) }}
               </v-chip>
             </template>
             Data gagal dikirim ke Aplikasi SIM Lab
           </v-tooltip>
         </div>
         <div v-else>
-          {{ item.applicant.name }}
+          {{ toCapitalizeCase(item.applicant.name) }}
         </div>
       </template>
       <template v-slot:[`item.applicant.birth_date`]="{ item }">
@@ -312,63 +347,66 @@
       <template v-slot:[`item.actions`]="{ item }">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              v-if="item.lab_code_sample === null"
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="uncheckWarning(item)"
-            >
-              mdi-checkbox-blank-outline
-            </v-icon>
-            <v-icon
-              v-else-if="item.lab_code_sample !== null"
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="uncheck(item)"
-            >
-              mdi-check-box-outline
-            </v-icon>
+            <v-btn color="success" x-small dark class="py-4">
+              <v-icon
+                v-if="item.lab_code_sample === null"
+                v-bind="attrs"
+                small
+                v-on="on"
+                @click="uncheckWarning(item)"
+              >
+                mdi-checkbox-blank-outline
+              </v-icon>
+              <v-icon
+                v-else-if="item.lab_code_sample !== null"
+                v-bind="attrs"
+                small
+                v-on="on"
+                @click="uncheck(item)"
+              >
+                mdi-check-box-outline
+              </v-icon>
+            </v-btn>
           </template>
           <span>Uncheck</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="viewItem(item)"
-            >
-              mdi-card-search
-            </v-icon>
+            <v-btn color="primary" x-small dark class="py-4">
+              <v-icon small v-bind="attrs" v-on="on" @click="viewItem(item)">
+                mdi-eye-outline
+              </v-icon>
+            </v-btn>
           </template>
           <span>Detail</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="editApplicantOpen(item)"
-            >
-              mdi-pencil
-            </v-icon>
+            <v-btn color="warning" x-small dark class="py-4">
+              <v-icon
+                small
+                v-bind="attrs"
+                v-on="on"
+                @click="editApplicantOpen(item)"
+              >
+                mdi-pencil-outline
+              </v-icon>
+            </v-btn>
           </template>
           <span>Edit Data Peserta</span>
         </v-tooltip>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon
-              class="mr-2"
-              v-bind="attrs"
-              v-on="on"
-              @click="selectToRemove(item)"
-            >
-              mdi-delete
-            </v-icon>
+            <v-btn color="error" x-small dark class="py-4">
+              <v-icon
+                small
+                v-bind="attrs"
+                v-on="on"
+                @click="selectToRemove(item)"
+              >
+                mdi-trash-can-outline
+              </v-icon>
+            </v-btn>
           </template>
           <span>Hapus</span>
         </v-tooltip>
@@ -450,7 +488,7 @@
 <script>
 import { isEqual } from 'lodash'
 import { ValidationObserver } from 'vee-validate'
-import { getChipColor } from '@/utilities/formater'
+import { toCapitalizeCase } from '@/utilities/formater'
 import {
   EVENT_BLAST_SUCCESS,
   SET_LABCODE_SUCCESS,
@@ -540,10 +578,6 @@ export default {
     ApplicantEditDialog,
     ValidationObserver
   },
-  filters: {
-    getChipColor
-  },
-
   props: {
     idEvent: {
       type: [Number, String],
@@ -581,6 +615,7 @@ export default {
       incompleteResultTest: [],
       editApplicant: false,
       idApplicant: null,
+      advanceFilter: false,
       ruleValidationStartDate: '',
       ruleValidationEndDate: '',
       listQuery: {
@@ -610,6 +645,18 @@ export default {
       },
       get() {
         return this.$store.getters['eventParticipants/getTableOption']
+      }
+    },
+    searchKey: {
+      async set(value) {
+        await this.$store.dispatch('eventParticipants/resetOptions')
+        this.options = {
+          ...this.options,
+          keyWords: value
+        }
+      },
+      get() {
+        return this.$route.query.keyWords
       }
     },
     totalItems() {
@@ -651,6 +698,7 @@ export default {
   },
 
   methods: {
+    toCapitalizeCase,
     async searchFilter() {
       const validStartDate = await this.$refs.startDate.validate()
       const validEndDate = await this.$refs.endDate.validate()

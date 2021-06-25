@@ -19,8 +19,8 @@
             <h2>Selamat datang di Aplikasi</h2>
             <h2 class="primary--text">Pikobar Pendaftaran Tes</h2>
           </div>
-          <div align="center">
-            <v-img src="/login-icon.svg" width="300" />
+          <div>
+            <v-img class="mx-auto" src="/login-icon.svg" width="300" />
           </div>
           <div class="my-8">
             <v-alert

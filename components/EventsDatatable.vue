@@ -8,7 +8,7 @@
         to="/events/create"
       >
         <v-icon class="mr-1">
-          mdi-plus-circle
+          mdi-plus
         </v-icon>
         Tambah Kegiatan
       </v-btn>
@@ -106,30 +106,70 @@
       </template>
       <template v-slot:[`item.status`]="{ value }">
         <v-chip small class="ma-0" :color="value | getChipColor">
-          {{ value }}
+          {{ toCapitalizeCase(value) }}
         </v-chip>
       </template>
+      <template v-slot:[`item.city.name`]="{ item }">
+        {{ toCapitalizeCase(item.city.name) }}
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon
-          v-if="allow.includes('view-events')"
-          class="mr-2"
-          @click="$router.push(`events/${item.id}`)"
-        >
-          mdi-card-search
-        </v-icon>
-        <v-icon
-          v-if="allow.includes('edit-events')"
-          class="mr-2"
-          @click="$router.push(`events/${item.id}/edit`)"
-        >
-          mdi-pencil
-        </v-icon>
-        <v-icon
-          v-if="allow.includes('delete-events')"
-          @click="selectToRemove({ id: item.id, name: item.event_name })"
-        >
-          mdi-delete
-        </v-icon>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-if="allow.includes('view-events')"
+              v-bind="attrs"
+              color="primary"
+              x-small
+              dark
+              class="py-4"
+              v-on="on"
+              @click="$router.push(`events/${item.id}`)"
+            >
+              <v-icon small>
+                mdi-eye-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>Detail</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-if="allow.includes('edit-events')"
+              v-bind="attrs"
+              color="warning"
+              x-small
+              dark
+              class="py-4"
+              v-on="on"
+              @click="$router.push(`events/${item.id}/edit`)"
+            >
+              <v-icon small>
+                mdi-pencil-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>Edit</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-if="allow.includes('delete-events')"
+              v-bind="attrs"
+              color="error"
+              x-small
+              dark
+              class="py-4"
+              v-on="on"
+              @click="selectToRemove({ id: item.id, name: item.event_name })"
+            >
+              <v-icon small>
+                mdi-trash-can-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>Hapus</span>
+        </v-tooltip>
       </template>
     </v-data-table>
     <event-delete-dialog
@@ -152,7 +192,7 @@ import {
   DEFAULT_PAGINATION
 } from '@/utilities/constant'
 import { ValidationObserver } from 'vee-validate'
-import { getChipColor } from '@/utilities/formater'
+import { getChipColor, toCapitalizeCase } from '@/utilities/formater'
 import EventDeleteDialog from '@/components/EventDeleteDialog'
 
 const headers = [
@@ -164,7 +204,13 @@ const headers = [
   { text: 'Peserta', value: 'invitations_count', width: 100, align: 'center' },
   { text: 'Status', value: 'status' },
   { text: 'Kloter', value: 'schedules_count', width: 100, align: 'center' },
-  { text: 'Actions', value: 'actions', sortable: false, width: 150 }
+  {
+    text: 'Actions',
+    value: 'actions',
+    sortable: false,
+    width: 175,
+    align: 'center'
+  }
 ]
 
 export default {
@@ -269,6 +315,7 @@ export default {
   },
 
   methods: {
+    toCapitalizeCase,
     async searchFilter() {
       const validStartDate = await this.$refs.startDate.validate()
       const validEndDate = await this.$refs.endDate.validate()

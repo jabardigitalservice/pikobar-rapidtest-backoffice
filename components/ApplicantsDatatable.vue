@@ -124,6 +124,15 @@
           </template>
         </v-layout>
       </template>
+      <template v-slot:[`item.name`]="{ item }">
+        {{ toCapitalizeCase(item.name) }}
+      </template>
+      <template v-slot:[`item.workplace_name`]="{ item }">
+        {{ toCapitalizeCase(item.workplace_name) }}
+      </template>
+      <template v-slot:[`item.city.name`]="{ item }">
+        {{ toCapitalizeCase(item.city.name) }}
+      </template>
       <template v-slot:[`item.symptoms_interaction`]="{ item }">
         <v-layout justify-center>
           <template v-if="item.symptoms_interaction === '0'">
@@ -162,26 +171,63 @@
         </v-layout>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon
-          v-if="allow.includes('view-applicants')"
-          class="mr-2"
-          @click="viewItem(item)"
-        >
-          mdi-card-search
-        </v-icon>
-        <v-icon
-          v-if="allow.includes('edit-applicants')"
-          class="mr-2"
-          @click="editItem(item)"
-        >
-          mdi-pencil
-        </v-icon>
-        <v-icon
-          v-if="allow.includes('delete-applicants')"
-          @click="deleteItem(item)"
-        >
-          mdi-delete
-        </v-icon>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-if="allow.includes('view-applicants')"
+              v-bind="attrs"
+              color="primary"
+              x-small
+              dark
+              class="py-4"
+              v-on="on"
+              @click="viewItem(item)"
+            >
+              <v-icon small>
+                mdi-eye-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>Detail</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-if="allow.includes('edit-applicants')"
+              v-bind="attrs"
+              color="warning"
+              x-small
+              dark
+              class="py-4"
+              v-on="on"
+              @click="editItem(item)"
+            >
+              <v-icon small>
+                mdi-pencil-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>Edit</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-if="allow.includes('delete-applicants')"
+              v-bind="attrs"
+              color="error"
+              x-small
+              dark
+              class="py-4"
+              v-on="on"
+              @click="deleteItem(item)"
+            >
+              <v-icon small>
+                mdi-trash-can-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>Hapus</span>
+        </v-tooltip>
       </template>
     </v-data-table>
 
@@ -220,6 +266,7 @@ import { isEqual } from 'lodash'
 import { mapGetters } from 'vuex'
 import { ValidationObserver } from 'vee-validate'
 import { getPersonStatusText } from '@/utilities/personStatus'
+import { toCapitalizeCase } from '@/utilities/formater'
 import ApplicantCreateDialog from '@/components/ApplicantCreateDialog'
 import ApplicantEditDialog from '@/components/ApplicantEditDialog'
 import ApplicantViewDialog from '@/components/ApplicantViewDialog'
@@ -255,7 +302,13 @@ const headers = [
     align: 'center'
   },
   { text: 'Tanggal Terdaftar', value: 'registration_at', width: 200 },
-  { text: 'Actions', value: 'actions', sortable: false, width: 150 }
+  {
+    text: 'Actions',
+    value: 'actions',
+    sortable: false,
+    width: 175,
+    align: 'center'
+  }
 ]
 
 export default {
@@ -408,6 +461,7 @@ export default {
   },
 
   methods: {
+    toCapitalizeCase,
     getPersonStatusText,
     async searchFilter() {
       const validStartDate = await this.$refs.startDate.validate()

@@ -8,7 +8,9 @@
       >
         <v-card>
           <v-card-title>
-            <span class="col">Impor Data Hasil Test</span>
+            <span class="col text-subtitle-1 font-weight-bold my-n5">
+              Import Data Hasil Test
+            </span>
             <v-btn icon @click="close">
               <v-icon>mdi-close</v-icon>
             </v-btn>
