@@ -41,8 +41,8 @@
                   <v-progress-circular
                     v-if="loading"
                     :indeterminate="loading"
-                    :size="70"
-                    :width="7"
+                    :size="60"
+                    :width="6"
                     color="primary"
                   />
                 </div>
@@ -106,7 +106,7 @@
                       </v-alert>
                       <v-alert
                         v-for="(error, index) in errorMessage"
-                        v-else-if="errorMessage.length"
+                        v-else-if="errorMessage"
                         :key="index"
                         text
                         outlined
@@ -155,14 +155,14 @@ export default {
       tabs: 0,
       loading: false,
       successMessage: null,
-      errorMessage: []
+      errorMessage: null
     }
   },
   methods: {
     resetData() {
       this.tabs = 0
       this.successMessage = null
-      this.errorMessage.length = 0
+      this.errorMessage = null
     },
     close() {
       this.importFile = null
@@ -189,11 +189,11 @@ export default {
         this.successMessage = response.message
       } catch (error) {
         if (error.data.errors && error.data.errors.file) {
-          Array.prototype.push.apply(this.errorMessage, error.data.errors.file)
-        } else if (error.data.errors && error.data.errors.length > 0) {
-          Array.prototype.push.apply(this.errorMessage, error.data.errors[0])
+          this.errorMessage = error.data.errors.file
+        } else if (error.data.errors) {
+          this.errorMessage = error.data.errors
         } else {
-          this.errorMessage.push(FAILED_IMPORT)
+          this.errorMessage = [FAILED_IMPORT]
         }
       } finally {
         this.tabs = 1
