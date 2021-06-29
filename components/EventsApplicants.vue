@@ -35,11 +35,10 @@
     >
       <template slot="top">
         <div class="pl-4">
-          <v-row class="pt-3">
-            <v-col lg="5" md="12" sm="12">
+          <v-row class="pt-3 d-flex">
+            <v-col lg="4" md="12" sm="12">
               <v-text-field
                 v-model="searchKey"
-                label="Nama Peserta | No. Pendaftaran | Kode Sampel | Instansi Tempat Kerja"
                 placeholder="Cari Peserta"
                 prepend-inner-icon="mdi-magnify"
                 clearable
@@ -49,7 +48,7 @@
               />
             </v-col>
             <v-spacer></v-spacer>
-            <v-col lg="4" md="12" sm="12">
+            <v-col lg="5" md="12" sm="12" class="d-flex justify-end mr-4">
               <v-tooltip top>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -57,6 +56,7 @@
                     color="primary"
                     v-bind="attrs"
                     outlined
+                    class="mr-2"
                     v-on="on"
                     @click="openModalImportHasil"
                   >
@@ -64,46 +64,45 @@
                     Impor
                   </v-btn>
                 </template>
-                <span>Impor hasil tes</span>
+                <span>Impor Hasil Tes</span>
               </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on1, attrs1 }">
-                  <v-menu bottom offset-y>
-                    <template v-slot:activator="{ on, attrs }">
+
+              <v-menu bottom offset-y>
+                <template v-slot:activator="{ on: menu, attrs }">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on: tooltip }">
                       <v-btn
-                        class="pr-1"
+                        class="pr-1 mr-2"
                         v-bind="attrs"
                         outlined
                         color="primary"
-                        v-on="on"
+                        v-on="{ ...tooltip, ...menu }"
                       >
-                        <v-icon v-bind="attrs1" class="ml-1" v-on="on1"
-                          >mdi-upload-outline</v-icon
-                        >
-                        Expor
+                        <v-icon class="ml-1">mdi-upload-outline</v-icon>
+                        Ekspor
                         <v-icon class="ml-1">mdi-menu-down</v-icon>
                       </v-btn>
                     </template>
-                    <v-list>
-                      <v-list-item
-                        v-for="(item, i) in [
-                          { icon: 'table', format: 'xls', text: 'Excel F1' },
-                          { icon: 'table', format: 'xls', text: 'Excel F2' },
-                          { icon: 'table', format: 'xls', text: 'Excel Raw' }
-                        ]"
-                        :key="i"
-                        @click="downloadExport(item)"
-                      >
-                        <v-list-item-title>
-                          <v-icon class="mr-1">mdi-{{ item.icon }}</v-icon>
-                          {{ item.text }}
-                        </v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
+                    <span>Ekspor Data Peserta</span>
+                  </v-tooltip>
                 </template>
-                <span>Expor data peserta</span>
-              </v-tooltip>
+                <v-list>
+                  <v-list-item
+                    v-for="(item, i) in [
+                      { icon: 'table', format: 'xls', text: 'Excel F1' },
+                      { icon: 'table', format: 'xls', text: 'Excel F2' },
+                      { icon: 'table', format: 'xls', text: 'Excel Raw' }
+                    ]"
+                    :key="i"
+                    @click="downloadExport(item)"
+                  >
+                    <v-list-item-title>
+                      <v-icon class="mr-1">mdi-{{ item.icon }}</v-icon>
+                      {{ item.text }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
               <v-btn color="primary" @click="advanceFilter = !advanceFilter">
                 Filter
                 <v-icon v-if="advanceFilter" class="pl-1">
@@ -138,9 +137,9 @@
                 />
               </ValidationObserver>
             </v-col>
-            <v-spacer></v-spacer>
-            <v-col lg="2" md="12" sm="12">
-              <v-btn color="primary" @click="searchFilter">
+            <!-- <v-spacer></v-spacer> -->
+            <v-col lg="3" md="12" sm="12">
+              <v-btn color="primary" class="mr-2" @click="searchFilter">
                 Cari
               </v-btn>
               <v-btn
