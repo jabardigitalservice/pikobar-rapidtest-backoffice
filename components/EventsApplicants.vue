@@ -702,7 +702,6 @@ export default {
       const validStartDate = await this.$refs.startDate.validate()
       const validEndDate = await this.$refs.endDate.validate()
       if (validStartDate && validEndDate) {
-        await this.$store.dispatch('eventParticipants/resetOptions')
         this.options = {
           ...this.options,
           keyWords: this.listQuery.searchKey,
