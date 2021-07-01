@@ -111,7 +111,17 @@ export default {
     dsn: process.env.SENTRY_DSN,
     config: {
       environment: process.env.APP_ENV || 'local'
-    }
+    },
+    tracesSampleRate: process.env.SENTRY_TRACES_SAMPLE_RATE,
+    vueOptions: {
+      tracing: true,
+      tracingOptions: {
+        hooks: ['mount', 'update'],
+        timeout: 2000,
+        trackComponents: true
+      }
+    },
+    browserOptions: {}
   },
 
   /*
