@@ -137,7 +137,6 @@
                 />
               </ValidationObserver>
             </v-col>
-            <!-- <v-spacer></v-spacer> -->
             <v-col lg="3" md="12" sm="12">
               <v-btn color="primary" class="mr-2" @click="searchFilter">
                 Cari
